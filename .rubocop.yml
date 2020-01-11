@@ -1,0 +1,27 @@
+require:
+  - rubocop-rails
+  - rubocop-rspec
+
+AllCops:
+  DisplayCopNames: true
+  TargetRubyVersion: 2.7
+  Exclude:
+    - 'db/schema.rb'
+    - 'spec/rails_helper.rb'
+    - 'spec/spec_helper.rb'
+
+Style/FrozenStringLiteralComment:
+  Enabled: false
+
+Layout/LineLength:
+  Max: 100
+  IgnoredPatterns: ['\#.*'] # ignore long comments
+
+Metrics/MethodLength:
+  Max: 25
+
+Style/Documentation:
+  Exclude:
+    - 'app/models/application_record.rb'
+    - 'config/application.rb'
+    - 'db/migrate/*.rb'

@@ -5,9 +5,9 @@
 Given we have two models, Article and Story. Article has name, text and type (like blog post, facebook post or tweet).
 Story has name and contains one or more articles.
 
-There should be a single API enpoint that returns list of articles. Basing on query params list could be:
+There should be a single API endpoint that returns list of articles. Basing on query params list could be:
 
- - search by name or/and text article field
+ - searched by article name or text
  - sorted on any field
  - grouped by any of field
  - grouped by story with totals:
@@ -24,7 +24,7 @@ UI should consist of:
 
 - table of articles with sort controls in column headers
 - select box with options to group by
-- quick search input field
+- search input field
 
 
 ## add realtime
