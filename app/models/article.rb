@@ -2,7 +2,9 @@
 class Article < ApplicationRecord
   self.inheritance_column = '_type'
 
-  TYPES = %i[blog_post facebok tweet].freeze
-  enum type: { blog_post: '' }
+  TYPES = %i[blog_post facebook tweet].freeze
+
+  enum type: TYPES.to_h { |t| [t, t.to_s] }, suffix: true
+
   belongs_to :story
 end
