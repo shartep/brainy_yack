@@ -182,6 +182,7 @@ GEM
       sprockets (>= 3.0.0)
     thor (1.0.1)
     thread_safe (0.3.6)
+    timecop (0.9.1)
     tzinfo (1.2.6)
       thread_safe (~> 0.1)
     unicode-display_width (1.6.0)
@@ -208,6 +209,7 @@ DEPENDENCIES
   rubocop-rspec
   spring
   spring-watcher-listen (~> 2.0.0)
+  timecop
 
 RUBY VERSION
    ruby 2.7.0p0

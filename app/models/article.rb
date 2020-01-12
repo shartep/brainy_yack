@@ -4,7 +4,7 @@ class Article < ApplicationRecord
 
   TYPES = %i[blog_post facebook tweet].freeze
 
-  enum type: TYPES.to_h { |t| [t, t.to_s] }, suffix: true
+  enum type: TYPES.to_h { |t| [t, t.to_s] }, _suffix: true
 
   belongs_to :story
 end
