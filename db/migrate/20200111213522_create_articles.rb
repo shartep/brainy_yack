@@ -5,15 +5,14 @@ class CreateArticles < ActiveRecord::Migration[6.0]
     SQL
 
     create_table :articles do |t|
+      t.column :type, :article_type, index: true
       t.string :name
       t.text :text
 
       t.timestamps
     end
-    add_column :articles, :type, :article_type
 
     add_index :articles, "to_tsvector('english', name || ' ' || text)", using: :gin
-    add_index :articles, :type
   end
 
   def down

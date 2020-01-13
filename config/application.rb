@@ -33,5 +33,9 @@ module BrainyYack
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
     config.api_only = true
+
+    # add this configuration as I'm currently create custom enum data type `article_type` for DB
+    # but this feature not correctly supports by `schema.rb`
+    config.active_record.schema_format = :sql
   end
 end

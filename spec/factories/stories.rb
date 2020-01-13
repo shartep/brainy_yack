@@ -1,5 +1,5 @@
 FactoryBot.define do
   factory :story do
-    name { Faker::Book.name }
+    name { Faker::Company.name }
   end
 end

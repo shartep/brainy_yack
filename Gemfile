@@ -34,13 +34,15 @@ group :development do
   gem 'spring'
   gem 'spring-watcher-listen', '~> 2.0.0'
 
+  # linters
   gem 'rubocop'
   gem 'rubocop-rails'
   gem 'rubocop-rspec'
 end
 
 group :test do
-  gem 'factory_bot_rails'
-  gem 'faker'
-  gem 'timecop'
+  gem 'factory_bot_rails'   # fixtures replacement with a straightforward definition syntax
+  gem 'faker'               # generates fake data
+  gem 'timecop'             # providing "time travel" and "time freezing" capabilities
+  gem 'super_diff'          # intelligently display the differences between two data structures of any type in Rspec output
 end
