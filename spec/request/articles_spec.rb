@@ -147,7 +147,7 @@ RSpec.describe 'articles', type: :request do
           let(:expected_body) do
             {
               'status' => 'error',
-              'message' => 'Wrong field for order parameter, should be one of story_name, type, name, created_at, updated_at. Or direction parameter, should be one of asc, desc.'
+              'message' => 'Wrong value for order[:field] parameter, should be one of story_name, type, name, created_at, updated_at.'
             }
           end
 

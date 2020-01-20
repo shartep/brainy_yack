@@ -11,4 +11,10 @@ class ApplicationController < ActionController::API
           .then { |hash| keys.empty? ? hash : hash.slice(*keys) }
           .compact
   end
+
+  def cache_key(*keys)
+    param_hash(keys).then do |params|
+      keys.map { |k| "#{k}--#{params[k]}" }.join('/')
+    end
+  end
 end

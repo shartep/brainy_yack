@@ -24,11 +24,11 @@ class FindArticles < Service::Base
     return if order.blank?
 
     unless order[:field].in?(%w[story_name type name created_at updated_at])
-      invalid('Wrong value for order[:field] parameter, should be one of story_name, type, name, created_at, updated_at.')
+      invalid(order_field: 'Wrong value for order[:field] parameter, should be one of story_name, type, name, created_at, updated_at.')
     end
 
     unless order[:direction].in?([nil, 'asc', 'desc'])
-      invalid('Wrong value for order[:direction] parameter, should be one of asc, desc.')
+      invalid(order_deirection: 'Wrong value for order[:direction] parameter, should be one of asc, desc.')
     end
   end
 
@@ -36,7 +36,7 @@ class FindArticles < Service::Base
     return if grouped_by.blank?
 
     invalid(
-      'Wrong grouped_by parameter, should be one of type, name, created_at, updated_at, story'
+      grouped_by: 'Wrong grouped_by parameter, should be one of type, name, created_at, updated_at, story'
     ) unless grouped_by.in?(%w[type name created_at updated_at story])
   end
 
@@ -47,8 +47,9 @@ class FindArticles < Service::Base
   def search_filter
     return if @search.blank?
 
+    # Postgres full text search solution
     @scope = @scope.where(
-      "to_tsvector('english', name || ' ' || text) @@ to_tsquery(?)",
+      "to_tsvector('english', articles.name || ' ' || articles.text) @@ to_tsquery(?)",
       @search.gsub(' ', ' & ')
     )
   end
@@ -57,9 +58,9 @@ class FindArticles < Service::Base
     @scope = if order.blank?
       @scope.order(:id)
     elsif order[:field] == 'story_name'
-      @scope.order("stories.name #{order[:direction] || 'ASC'}")
+      @scope.order("stories.name #{order[:direction] || 'ASC'}").order(:id)
     else
-      @scope.order(order[:field] => (order[:direction] || 'ASC'))
+      @scope.order(order[:field] => (order[:direction] || 'ASC')).order(:id)
     end
   end
 
@@ -79,7 +80,7 @@ class FindArticles < Service::Base
         [group_field, {
           article_count: article_count,
           article_type_count: article_type_count,
-          article: Article.find(article_id)
+          article: Article.includes(:story).find(article_id)
         }]
       end
     else
@@ -111,14 +112,20 @@ class FindArticles < Service::Base
             .select('COUNT(articles.id) AS article_count')
             .select('COUNT(DISTINCT articles.type) AS article_type_count')
             .select('MAX(articles.id) AS article_id')
+            .joins('JOIN stories ON stories.id = articles.story_id')
             .group('group_field')
             .reorder('group_field')
     )
   end
 
   def get_raw_sql(scope)
-    ApplicationRecord.connection.execute(scope.to_sql).map(&:symbolize_keys).tap do |h|
-      h[:article_ids] = h[:article_ids][1..-2].split(',')
+    ApplicationRecord.connection.execute(scope.to_sql).map do |row|
+      row.symbolize_keys!.tap(&method(:array_arg_convertor!))
     end
+  end
+
+  # ARRAY_AGG aggregation function returns string like `{234,675,8554}`, we convert it in regular Array here
+  def array_arg_convertor!(hash)
+    hash[:article_ids] = hash[:article_ids][1..-2].split(',') if hash[:article_ids].present?
   end
 end
