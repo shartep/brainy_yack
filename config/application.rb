@@ -37,5 +37,7 @@ module BrainyYack
     # add this configuration as I'm currently create custom enum data type `article_type` for DB
     # but this feature not correctly supports by `schema.rb`
     config.active_record.schema_format = :sql
+
+    config.eager_load_paths << Rails.root.join('lib/general_code')
   end
 end

@@ -10,4 +10,9 @@ require 'faker'
 
 stories = 10.times.map { Story.create name: Faker::Company.name }
 
-100.times { Article.create name: Faker::Company.name, type: Article::TYPES.sample.to_s, text: Faker::Lorem.paragraphs.join("\n"), story: stories.sample }
+100.times do
+  Article.create name: Faker::Company.name,
+                 type: Article::TYPES.sample.to_s,
+                 text: Faker::Lorem.paragraphs.join("\n"),
+                 story: stories.sample
+end

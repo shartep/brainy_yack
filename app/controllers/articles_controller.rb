@@ -1,6 +1,9 @@
+# Controller for actions related to Article model
 class ArticlesController < ApplicationController
   # TODO: it make sense to think about caching this action in future
   def index
+    # articles = FindArticles.new(Article.all, **param_hash).call
+
     articles = Article.includes(:story)
     if params[:search].present?
       articles = articles.where(
@@ -10,7 +13,7 @@ class ArticlesController < ApplicationController
     end
 
     if params[:order].present?
-      unless params[:order][:filed].in?(%w[story_name type name created_at updated_at]) || params[:order][:direction].in?([nil, 'asc', 'desc'])
+      unless params[:order][:field].in?(%w[story_name type name created_at updated_at]) || params[:order][:direction].in?([nil, 'asc', 'desc'])
         render json: {
           status: :error,
           message: 'Wrong field for order parameter, should be one of story_name, type, name, created_at, updated_at. Or direction parameter, should be one of asc, desc.'
@@ -65,7 +68,7 @@ class ArticlesController < ApplicationController
             ]
           end
         }
-      elsif params[:grouped_by] = 'story'
+      elsif params[:grouped_by] == 'story'
         groups = articles.select("articles.story_id AS group_field")
                          .select("ARRAY_AGG(articles.id) AS ids")
                          .group('group_field')
@@ -77,7 +80,6 @@ class ArticlesController < ApplicationController
           params[:grouped_by] => ah.to_h do |group_field:, ids:|
             ids = ids[1..-2].split(',')
             la = Article.where(id: ids)
-            # byebug
             [
               Story.find(group_field).name,
               {

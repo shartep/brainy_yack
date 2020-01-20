@@ -21,16 +21,16 @@ RSpec.describe 'articles', type: :request do
     let(:art8_params) { {} }
     let(:art9_params) { {} }
 
-    let(:article_0) { create_article(created_at: 90.days.ago, updated_at: 68.day.ago, **art0_params) }
-    let(:article_1) { create_article(created_at: 80.days.ago, updated_at: 60.day.ago, **art1_params) }
-    let(:article_2) { create_article(created_at: 75.days.ago, updated_at: 50.day.ago, **art2_params) }
-    let(:article_3) { create_article(created_at: 67.days.ago, updated_at: 44.day.ago, **art3_params) }
-    let(:article_4) { create_article(created_at: 50.days.ago, updated_at: 40.day.ago, **art4_params) }
-    let(:article_5) { create_article(created_at: 48.days.ago, updated_at: 35.day.ago, **art5_params) }
-    let(:article_6) { create_article(created_at: 40.days.ago, updated_at: 22.day.ago, **art6_params) }
-    let(:article_7) { create_article(created_at: 30.days.ago, updated_at: 20.day.ago, **art7_params) }
-    let(:article_8) { create_article(created_at: 20.days.ago, updated_at: 18.day.ago, **art8_params) }
-    let(:article_9) { create_article(created_at: 7.days.ago,  updated_at: 5.day.ago,  **art9_params) }
+    let(:article_0) { create_article(created_at: 90.days.ago, updated_at: 68.days.ago, **art0_params) }
+    let(:article_1) { create_article(created_at: 80.days.ago, updated_at: 60.days.ago, **art1_params) }
+    let(:article_2) { create_article(created_at: 75.days.ago, updated_at: 50.days.ago, **art2_params) }
+    let(:article_3) { create_article(created_at: 67.days.ago, updated_at: 44.days.ago, **art3_params) }
+    let(:article_4) { create_article(created_at: 50.days.ago, updated_at: 40.days.ago, **art4_params) }
+    let(:article_5) { create_article(created_at: 48.days.ago, updated_at: 35.days.ago, **art5_params) }
+    let(:article_6) { create_article(created_at: 40.days.ago, updated_at: 22.days.ago, **art6_params) }
+    let(:article_7) { create_article(created_at: 30.days.ago, updated_at: 20.days.ago, **art7_params) }
+    let(:article_8) { create_article(created_at: 20.days.ago, updated_at: 18.days.ago, **art8_params) }
+    let(:article_9) { create_article(created_at: 7.days.ago,  updated_at: 5.days.ago,  **art9_params) }
 
     before { 10.times { |i| public_send("article_#{i}") } }
 
@@ -62,20 +62,22 @@ RSpec.describe 'articles', type: :request do
     end
 
     describe 'no filtering and ordering' do
-      let(:expected_body) { {
-        'articles' => [
-          serialize_article(article_0),
-          serialize_article(article_1),
-          serialize_article(article_2),
-          serialize_article(article_3),
-          serialize_article(article_4),
-          serialize_article(article_5),
-          serialize_article(article_6),
-          serialize_article(article_7),
-          serialize_article(article_8),
-          serialize_article(article_9)
-        ]
-      } }
+      let(:expected_body) do
+        {
+          'articles' => [
+            serialize_article(article_0),
+            serialize_article(article_1),
+            serialize_article(article_2),
+            serialize_article(article_3),
+            serialize_article(article_4),
+            serialize_article(article_5),
+            serialize_article(article_6),
+            serialize_article(article_7),
+            serialize_article(article_8),
+            serialize_article(article_9)
+          ]
+        }
+      end
 
       it { is_expected.to include(expected_body) }
     end
@@ -87,13 +89,15 @@ RSpec.describe 'articles', type: :request do
       let(:art3_params) { {text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'} }
       let(:art4_params) { {text: 'Text with Lorem ipsum in the middle.'} }
 
-      let(:expected_body) { {
-        'articles' => [
-          serialize_article(article_2),
-          serialize_article(article_3),
-          serialize_article(article_4),
-        ]
-      } }
+      let(:expected_body) do
+        {
+          'articles' => [
+            serialize_article(article_2),
+            serialize_article(article_3),
+            serialize_article(article_4),
+          ]
+        }
+      end
 
       it { is_expected.to include(expected_body) }
     end
@@ -103,22 +107,24 @@ RSpec.describe 'articles', type: :request do
       let(:field) { :created_at }
       let(:direction) { :asc }
 
-      let(:expected_body) { {
-        'articles' => [
-          serialize_article(article_1),
-          serialize_article(article_4),
-          serialize_article(article_7),
+      let(:expected_body) do
+        {
+          'articles' => [
+            serialize_article(article_1),
+            serialize_article(article_4),
+            serialize_article(article_7),
 
-          serialize_article(article_0),
-          serialize_article(article_2),
-          serialize_article(article_5),
+            serialize_article(article_0),
+            serialize_article(article_2),
+            serialize_article(article_5),
 
-          serialize_article(article_3),
-          serialize_article(article_6),
-          serialize_article(article_8),
-          serialize_article(article_9)
-        ]
-      } }
+            serialize_article(article_3),
+            serialize_article(article_6),
+            serialize_article(article_8),
+            serialize_article(article_9)
+          ]
+        }
+      end
 
       describe 'wrong parameter' do
         let(:params) { { order: {field: :title, direction: :up} } }
@@ -138,10 +144,12 @@ RSpec.describe 'articles', type: :request do
             JSON.parse(response.body)
           end
 
-          let(:expected_body) { {
-            'status' => 'error',
-            'message' => 'Wrong field for order parameter, should be one of story_name, type, name, created_at, updated_at. Or direction parameter, should be one of asc, desc.'
-          } }
+          let(:expected_body) do
+            {
+              'status' => 'error',
+              'message' => 'Wrong field for order parameter, should be one of story_name, type, name, created_at, updated_at. Or direction parameter, should be one of asc, desc.'
+            }
+          end
 
           it { is_expected.to eq expected_body }
         end
@@ -207,20 +215,22 @@ RSpec.describe 'articles', type: :request do
         let(:field) { :created_at }
         let(:direction) { :desc }
 
-        let(:expected_body) { {
-          'articles' => [
-            serialize_article(article_9),
-            serialize_article(article_8),
-            serialize_article(article_7),
-            serialize_article(article_6),
-            serialize_article(article_5),
-            serialize_article(article_4),
-            serialize_article(article_3),
-            serialize_article(article_2),
-            serialize_article(article_1),
-            serialize_article(article_0)
-          ]
-        } }
+        let(:expected_body) do
+          {
+            'articles' => [
+              serialize_article(article_9),
+              serialize_article(article_8),
+              serialize_article(article_7),
+              serialize_article(article_6),
+              serialize_article(article_5),
+              serialize_article(article_4),
+              serialize_article(article_3),
+              serialize_article(article_2),
+              serialize_article(article_1),
+              serialize_article(article_0)
+            ]
+          }
+        end
 
         it { is_expected.to include(expected_body) }
       end
@@ -228,27 +238,29 @@ RSpec.describe 'articles', type: :request do
       describe 'updated_at' do
         let(:field) { :updated_at }
 
-        let(:expected_body) { {
-          'articles' => [
-            serialize_article(article_0),
-            serialize_article(article_1),
-            serialize_article(article_2),
-            serialize_article(article_3),
-            serialize_article(article_4),
-            serialize_article(article_5),
-            serialize_article(article_6),
-            serialize_article(article_7),
-            serialize_article(article_8),
-            serialize_article(article_9)
-          ]
-        } }
+        let(:expected_body) do
+          {
+            'articles' => [
+              serialize_article(article_0),
+              serialize_article(article_1),
+              serialize_article(article_2),
+              serialize_article(article_3),
+              serialize_article(article_4),
+              serialize_article(article_5),
+              serialize_article(article_6),
+              serialize_article(article_7),
+              serialize_article(article_8),
+              serialize_article(article_9)
+            ]
+          }
+        end
 
         it { is_expected.to include(expected_body) }
       end
     end
 
     describe 'grouped by' do
-      let(:current_time) { Time.new(2019, 12, 11) }
+      let(:current_time) { Time.new(2019, 12, 11).utc }
 
       describe 'wrong parameter' do
         let(:params) { {grouped_by: :title} }
@@ -268,10 +280,12 @@ RSpec.describe 'articles', type: :request do
             JSON.parse(response.body)
           end
 
-          let(:expected_body) { {
-            'status' => 'error',
-            'message' => 'Wrong grouped_by parameter, should be one of type, name, created_at, updated_at, story'
-          } }
+          let(:expected_body) do
+            {
+              'status' => 'error',
+              'message' => 'Wrong grouped_by parameter, should be one of type, name, created_at, updated_at, story'
+            }
+          end
 
           it { is_expected.to eq expected_body }
         end
@@ -291,26 +305,28 @@ RSpec.describe 'articles', type: :request do
         let(:art8_params) { {type: :blog_post} }
         let(:art9_params) { {type: :blog_post} }
 
-        let(:expected_body) { {
-          'type' => {
-            'blog_post' => [
-              serialize_article(article_3),
-              serialize_article(article_6),
-              serialize_article(article_8),
-              serialize_article(article_9)
-            ],
-            'facebook' => [
-              serialize_article(article_0),
-              serialize_article(article_2),
-              serialize_article(article_5)
-            ],
-            'tweet' => [
-              serialize_article(article_1),
-              serialize_article(article_4),
-              serialize_article(article_7)
-            ]
+        let(:expected_body) do
+          {
+            'type' => {
+              'blog_post' => [
+                serialize_article(article_3),
+                serialize_article(article_6),
+                serialize_article(article_8),
+                serialize_article(article_9)
+              ],
+              'facebook' => [
+                serialize_article(article_0),
+                serialize_article(article_2),
+                serialize_article(article_5)
+              ],
+              'tweet' => [
+                serialize_article(article_1),
+                serialize_article(article_4),
+                serialize_article(article_7)
+              ]
+            }
           }
-        } }
+        end
 
         it { is_expected.to include(expected_body) }
       end
@@ -329,26 +345,28 @@ RSpec.describe 'articles', type: :request do
         let(:art8_params) { {name: 'Apple'} }
         let(:art9_params) { {name: 'Apple'} }
 
-        let(:expected_body) { {
-          'name' => {
-            'Apple' => [
-              serialize_article(article_3),
-              serialize_article(article_6),
-              serialize_article(article_8),
-              serialize_article(article_9)
-            ],
-            'Dog' => [
-              serialize_article(article_0),
-              serialize_article(article_2),
-              serialize_article(article_5)
-            ],
-            'Interesting' => [
-              serialize_article(article_1),
-              serialize_article(article_4),
-              serialize_article(article_7)
-            ]
+        let(:expected_body) do
+          {
+            'name' => {
+              'Apple' => [
+                serialize_article(article_3),
+                serialize_article(article_6),
+                serialize_article(article_8),
+                serialize_article(article_9)
+              ],
+              'Dog' => [
+                serialize_article(article_0),
+                serialize_article(article_2),
+                serialize_article(article_5)
+              ],
+              'Interesting' => [
+                serialize_article(article_1),
+                serialize_article(article_4),
+                serialize_article(article_7)
+              ]
+            }
           }
-        } }
+        end
 
         it { is_expected.to include(expected_body) }
       end
@@ -367,28 +385,30 @@ RSpec.describe 'articles', type: :request do
         let(:article_8) { create_article(created_at: current_time - 30.days) }
         let(:article_9) { create_article(created_at: current_time - 7.days) }
 
-        let(:expected_body) { {
-          'created_at' => {
-            '2019-12-03' => [
-              serialize_article(article_9)
-            ],
-            '2019-11-10' => [
-              serialize_article(article_6),
-              serialize_article(article_7),
-              serialize_article(article_8)
-            ],
-            '2019-10-11' => [
-              serialize_article(article_3),
-              serialize_article(article_4),
-              serialize_article(article_5)
-            ],
-            '2019-09-11' => [
-              serialize_article(article_0),
-              serialize_article(article_1),
-              serialize_article(article_2)
-            ]
+        let(:expected_body) do
+          {
+            'created_at' => {
+              '2019-12-03' => [
+                serialize_article(article_9)
+              ],
+              '2019-11-10' => [
+                serialize_article(article_6),
+                serialize_article(article_7),
+                serialize_article(article_8)
+              ],
+              '2019-10-11' => [
+                serialize_article(article_3),
+                serialize_article(article_4),
+                serialize_article(article_5)
+              ],
+              '2019-09-11' => [
+                serialize_article(article_0),
+                serialize_article(article_1),
+                serialize_article(article_2)
+              ]
+            }
           }
-        } }
+        end
 
         it { is_expected.to include(expected_body) }
       end
@@ -407,28 +427,30 @@ RSpec.describe 'articles', type: :request do
         let(:article_8) { create_article(created_at: current_time - 30.days, updated_at: current_time - 20.days) }
         let(:article_9) { create_article(created_at: current_time - 7.days, updated_at: current_time - 5.days) }
 
-        let(:expected_body) { {
-          'updated_at' => {
-            '2019-12-05' => [
-              serialize_article(article_9)
-            ],
-            '2019-11-20' => [
-              serialize_article(article_6),
-              serialize_article(article_7),
-              serialize_article(article_8)
-            ],
-            '2019-10-21' => [
-              serialize_article(article_3),
-              serialize_article(article_4),
-              serialize_article(article_5)
-            ],
-            '2019-09-21' => [
-              serialize_article(article_0),
-              serialize_article(article_1),
-              serialize_article(article_2)
-            ]
+        let(:expected_body) do
+          {
+            'updated_at' => {
+              '2019-12-05' => [
+                serialize_article(article_9)
+              ],
+              '2019-11-20' => [
+                serialize_article(article_6),
+                serialize_article(article_7),
+                serialize_article(article_8)
+              ],
+              '2019-10-21' => [
+                serialize_article(article_3),
+                serialize_article(article_4),
+                serialize_article(article_5)
+              ],
+              '2019-09-21' => [
+                serialize_article(article_0),
+                serialize_article(article_1),
+                serialize_article(article_2)
+              ]
+            }
           }
-        } }
+        end
 
         it { is_expected.to include(expected_body) }
       end
@@ -451,32 +473,34 @@ RSpec.describe 'articles', type: :request do
         let(:art8_params) { {story: story3, type: :tweet} }
         let(:art9_params) { {story: story3, type: :tweet} }
 
-        let(:expected_body) { {
-          'story' => {
-            'Big story' => {
-              'article_count' => 3,
-              'article_type_count' => 3,
-              'article' => serialize_article(article_7)
-            },
-            'Interesting story' => {
-              'article_count' => 3,
-              'article_type_count' => 3,
-              'article' => serialize_article(article_5)
-            },
-            'Victory story' => {
-              'article_count' => 4,
-              'article_type_count' => 3,
-              'article' => serialize_article(article_9)
+        let(:expected_body) do
+          {
+            'story' => {
+              'Big story' => {
+                'article_count' => 3,
+                'article_type_count' => 3,
+                'article' => serialize_article(article_7)
+              },
+              'Interesting story' => {
+                'article_count' => 3,
+                'article_type_count' => 3,
+                'article' => serialize_article(article_5)
+              },
+              'Victory story' => {
+                'article_count' => 4,
+                'article_type_count' => 3,
+                'article' => serialize_article(article_9)
+              }
             }
           }
-        } }
+        end
 
         it { is_expected.to include(expected_body) }
       end
     end
 
     describe 'filtered by search term, sorted by type filed and grouped by story' do
-      let(:params) { { search: 'Lorem', order: {field: :type}, grouped_by: :story } }
+      let(:params) { { search: 'Lorem', order: { field: :type }, grouped_by: :story } }
 
       let(:story1) { create(:story, name: 'Big story') }
       let(:story2) { create(:story, name: 'Interesting story') }
@@ -485,20 +509,22 @@ RSpec.describe 'articles', type: :request do
       let(:art3_params) { {story: story2, text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'} }
       let(:art4_params) { {story: story2, type: article_3.type, text: 'Text with Lorem ipsum in the middle.'} }
 
-      let(:expected_body) { {
-        'story' => {
-          'Big story' => {
-            'article_count' => 1,
-            'article_type_count' => 1,
-            'article' => serialize_article(article_2)
-          },
-          'Interesting story' => {
-            'article_count' => 2,
-            'article_type_count' => 1,
-            'article' => serialize_article(article_4)
+      let(:expected_body) do
+        {
+          'story' => {
+            'Big story' => {
+              'article_count' => 1,
+              'article_type_count' => 1,
+              'article' => serialize_article(article_2)
+            },
+            'Interesting story' => {
+              'article_count' => 2,
+              'article_type_count' => 1,
+              'article' => serialize_article(article_4)
+            }
           }
         }
-      } }
+      end
 
       it { is_expected.to include(expected_body) }
     end
