@@ -1,5 +1,5 @@
 # base class for all controllers, helpful for different helper methods related to params, current_user etc.
-class ApplicationController < ActionController::API
+class ApplicationController < ActionController::Base
   private
 
   # As I delegate a lot of validation and param conversion to services, I don't need most

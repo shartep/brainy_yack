@@ -32,7 +32,7 @@ module BrainyYack
     # Only loads a smaller set of middleware suitable for API only apps.
     # Middleware like session, flash, cookies can be added back manually.
     # Skip views, helpers and assets when generating a new resource.
-    config.api_only = true
+    # config.api_only = true
 
     # add this configuration as I'm currently create custom enum data type `article_type` for DB
     # but this feature not correctly supports by `schema.rb`
