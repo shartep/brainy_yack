@@ -37,7 +37,7 @@ RSpec.describe 'articles', type: :request do
     def create_article(created_at: Time.current, updated_at: Time.current, **params)
       Timecop
         .freeze(created_at) { create(:article, params) }
-        .tap { |article| Timecop.freeze(updated_at) { article.touch } }
+        .tap { |article| Timecop.freeze(updated_at) { article.touch } } # rubocop:disable Rails/SkipsModelValidations
     end
 
     def serialize_article(article)
@@ -86,7 +86,7 @@ RSpec.describe 'articles', type: :request do
       let(:params) { {search: 'Lorem Ipsum'} }
 
       let(:art2_params) { {name: 'Lorem Ipsum'} }
-      let(:art3_params) { {text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'} }
+      let(:art3_params) { {text: 'Lorem ipsum ' + Faker::Lorem.paragraph} }
       let(:art4_params) { {text: 'Text with Lorem ipsum in the middle.'} }
 
       let(:expected_body) do
@@ -94,7 +94,7 @@ RSpec.describe 'articles', type: :request do
           'articles' => [
             serialize_article(article_2),
             serialize_article(article_3),
-            serialize_article(article_4),
+            serialize_article(article_4)
           ]
         }
       end
@@ -103,7 +103,7 @@ RSpec.describe 'articles', type: :request do
     end
 
     describe 'sorted by' do
-      let(:params) { { order: {field: field, direction: direction} } }
+      let(:params) { {order: {field: field, direction: direction}} }
       let(:field) { :created_at }
       let(:direction) { :asc }
 
@@ -127,7 +127,7 @@ RSpec.describe 'articles', type: :request do
       end
 
       describe 'wrong parameter' do
-        let(:params) { { order: {field: :title, direction: :up} } }
+        let(:params) { {order: {field: :title, direction: :up}} }
 
         context 'with unprocessable status' do
           subject do
@@ -147,7 +147,8 @@ RSpec.describe 'articles', type: :request do
           let(:expected_body) do
             {
               'status' => 'error',
-              'message' => 'Wrong value for order[:field] parameter, should be one of story_name, type, name, created_at, updated_at.'
+              'message' => 'Wrong value for order[:field] parameter, should be one of story_name, '\
+                           'type, name, created_at, updated_at.'
             }
           end
 
@@ -292,7 +293,7 @@ RSpec.describe 'articles', type: :request do
       end
 
       describe 'type' do
-        let(:params) { { grouped_by: :type } }
+        let(:params) { {grouped_by: :type} }
 
         let(:art0_params) { {type: :facebook} }
         let(:art1_params) { {type: :tweet} }
@@ -332,7 +333,7 @@ RSpec.describe 'articles', type: :request do
       end
 
       describe 'name' do
-        let(:params) { { grouped_by: :name } }
+        let(:params) { {grouped_by: :name} }
 
         let(:art0_params) { {name: 'Dog'} }
         let(:art1_params) { {name: 'Interesting'} }
@@ -372,7 +373,7 @@ RSpec.describe 'articles', type: :request do
       end
 
       describe 'created_at' do
-        let(:params) { { grouped_by: :created_at } }
+        let(:params) { {grouped_by: :created_at} }
 
         let(:article_0) { create_article(created_at: current_time - 90.days) }
         let(:article_1) { create_article(created_at: current_time - 90.days) }
@@ -414,7 +415,7 @@ RSpec.describe 'articles', type: :request do
       end
 
       describe 'updated_at' do
-        let(:params) { { grouped_by: :updated_at } }
+        let(:params) { {grouped_by: :updated_at} }
 
         let(:article_0) { create_article(created_at: current_time - 90.days, updated_at: current_time - 80.days) }
         let(:article_1) { create_article(created_at: current_time - 90.days, updated_at: current_time - 80.days) }
@@ -456,7 +457,7 @@ RSpec.describe 'articles', type: :request do
       end
 
       describe 'story' do
-        let(:params) { { grouped_by: :story } }
+        let(:params) { {grouped_by: :story} }
 
         let(:story1) { create(:story, name: 'Big story') }
         let(:story2) { create(:story, name: 'Interesting story') }
@@ -500,13 +501,13 @@ RSpec.describe 'articles', type: :request do
     end
 
     describe 'filtered by search term, sorted by type filed and grouped by story' do
-      let(:params) { { search: 'Lorem', order: { field: :type }, grouped_by: :story } }
+      let(:params) { {search: 'Lorem', order: {field: :type}, grouped_by: :story} }
 
       let(:story1) { create(:story, name: 'Big story') }
       let(:story2) { create(:story, name: 'Interesting story') }
 
       let(:art2_params) { {story: story1, name: 'Lorem Ipsum'} }
-      let(:art3_params) { {story: story2, text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.'} }
+      let(:art3_params) { {story: story2, text: 'Lorem ipsum ' + Faker::Lorem.paragraph} }
       let(:art4_params) { {story: story2, type: article_3.type, text: 'Text with Lorem ipsum in the middle.'} }
 
       let(:expected_body) do

@@ -147,7 +147,7 @@ module Service
     def initialize_subject(attrs)
       return if _subject.blank?
 
-      value = attrs.fetch(_subject) { fail ArgumentError, "#{_subject} is missing" }
+      value = attrs.fetch(_subject) { raise ArgumentError, "#{_subject} is missing" }
       raise ArgumentError, "#{_subject} attrs is not present" if value.blank?
 
       instance_variable_set "@#{_subject}", value

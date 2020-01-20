@@ -24,20 +24,23 @@ class FindArticles < Service::Base
     return if order.blank?
 
     unless order[:field].in?(%w[story_name type name created_at updated_at])
-      invalid(order_field: 'Wrong value for order[:field] parameter, should be one of story_name, type, name, created_at, updated_at.')
+      invalid(
+        order_field:
+          'Wrong value for order[:field] parameter, should be one of story_name, type, name, created_at, updated_at.'
+      )
     end
 
-    unless order[:direction].in?([nil, 'asc', 'desc'])
-      invalid(order_deirection: 'Wrong value for order[:direction] parameter, should be one of asc, desc.')
-    end
+    return if order[:direction].in?([nil, 'asc', 'desc'])
+
+    invalid(order_deirection: 'Wrong value for order[:direction] parameter, should be one of asc, desc.')
   end
 
   def validate_grouped_by!
-    return if grouped_by.blank?
+    return if grouped_by.blank? || grouped_by.in?(%w[type name created_at updated_at story])
 
     invalid(
       grouped_by: 'Wrong grouped_by parameter, should be one of type, name, created_at, updated_at, story'
-    ) unless grouped_by.in?(%w[type name created_at updated_at story])
+    )
   end
 
   def apply_includes
@@ -55,34 +58,25 @@ class FindArticles < Service::Base
   end
 
   def apply_order
-    @scope = if order.blank?
-      @scope.order(:id)
-    elsif order[:field] == 'story_name'
-      @scope.order("stories.name #{order[:direction] || 'ASC'}").order(:id)
-    else
-      @scope.order(order[:field] => (order[:direction] || 'ASC')).order(:id)
-    end
+    @scope =
+      if order.blank?
+        @scope
+      elsif order[:field] == 'story_name'
+        @scope.order("stories.name #{order[:direction] || 'ASC'}")
+      else
+        @scope.order(order[:field] => (order[:direction] || 'ASC'))
+      end.order(:id)
   end
 
   def apply_grouped_by
     return @scope.to_a if grouped_by.blank?
 
     if grouped_by.in?(%w[created_at updated_at])
-      group_by_date_field.to_h do |group_field:, article_ids:|
-        [group_field.strftime('%F'), @scope.where(id: article_ids)]
-      end
+      group_by_date_field
     elsif grouped_by.in?(%w[type name])
-      group_by_string_field.to_h do |group_field:, article_ids:|
-        [group_field, @scope.where(id: article_ids)]
-      end
+      group_by_string_field
     elsif grouped_by == 'story'
-      group_by_story.to_h do |group_field:, article_count:, article_type_count:, article_id:|
-        [group_field, {
-          article_count: article_count,
-          article_type_count: article_type_count,
-          article: Article.includes(:story).find(article_id)
-        }]
-      end
+      group_by_story
     else
       raise NotImplementedError
     end
@@ -94,7 +88,9 @@ class FindArticles < Service::Base
             .select('ARRAY_AGG(articles.id) AS article_ids')
             .group('group_field')
             .reorder('group_field desc')
-    )
+    ).to_h do |group_field:, article_ids:|
+      [group_field.strftime('%F'), @scope.where(id: article_ids)]
+    end
   end
 
   def group_by_string_field
@@ -103,7 +99,9 @@ class FindArticles < Service::Base
             .select('ARRAY_AGG(articles.id) AS article_ids')
             .group('group_field')
             .reorder('group_field')
-    )
+    ).to_h do |group_field:, article_ids:|
+      [group_field, @scope.where(id: article_ids)]
+    end
   end
 
   def group_by_story
@@ -115,7 +113,13 @@ class FindArticles < Service::Base
             .joins('JOIN stories ON stories.id = articles.story_id')
             .group('group_field')
             .reorder('group_field')
-    )
+    ).to_h do |group_field:, article_count:, article_type_count:, article_id:|
+      [group_field, {
+        article_count: article_count,
+        article_type_count: article_type_count,
+        article: Article.includes(:story).find(article_id)
+      }]
+    end
   end
 
   def get_raw_sql(scope)

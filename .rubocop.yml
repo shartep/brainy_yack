@@ -14,14 +14,27 @@ Style/FrozenStringLiteralComment:
   Enabled: false
 
 Layout/LineLength:
-  Max: 100
+  Max: 120
   IgnoredPatterns: ['\#.*'] # ignore long comments
 
 Metrics/MethodLength:
   Max: 25
+
+Metrics/BlockLength:
+  ExcludedMethods:
+    - describe
+
+Metrics/ClassLength:
+  Max: 500
 
 Style/Documentation:
   Exclude:
     - 'app/models/application_record.rb'
     - 'config/application.rb'
     - 'db/migrate/*.rb'
+
+Layout/SpaceInsideHashLiteralBraces:
+  EnforcedStyle: no_space
+
+RSpec/NestedGroups:
+  Max: 6

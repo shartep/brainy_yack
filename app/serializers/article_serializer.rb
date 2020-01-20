@@ -7,20 +7,11 @@ class ArticleSerializer < Service::Base
 
   def _call
     if grouped_by.blank?
-      { articles: collection.map(&method(:record_serializer)) }
+      {articles: collection.map(&method(:record_serializer))}
     elsif grouped_by == 'story'
-      {
-        grouped_by => collection.transform_values do |group|
-          group[:article] = record_serializer(group[:article])
-          group
-        end
-      }
+      group_by_story
     else
-      {
-        grouped_by => collection.transform_values do |scope|
-          scope.map(&method(:record_serializer))
-        end
-      }
+      group_by_field
     end
   end
 
@@ -29,13 +20,28 @@ class ArticleSerializer < Service::Base
   end
 
   def validate_grouped_by!
-    return if grouped_by.blank?
+    return if grouped_by.blank? || grouped_by.in?(%w[type name created_at updated_at story])
 
-    unless grouped_by.in?(%w[type name created_at updated_at story])
-      invalid(
-        'Wrong grouped_by parameter, should be one of type, name, created_at, updated_at, story'
-      )
-    end
+    invalid(
+      grouped_by: 'Wrong grouped_by parameter, should be one of type, name, created_at, updated_at, story'
+    )
+  end
+
+  def group_by_story
+    {
+      grouped_by => collection.transform_values do |group|
+        group[:article] = record_serializer(group[:article])
+        group
+      end
+    }
+  end
+
+  def group_by_field
+    {
+      grouped_by => collection.transform_values do |scope|
+        scope.map(&method(:record_serializer))
+      end
+    }
   end
 
   def record_serializer(article)
