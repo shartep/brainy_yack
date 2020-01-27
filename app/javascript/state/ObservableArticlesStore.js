@@ -6,7 +6,10 @@ import ObservableArticle from "./ObservableArticle";
 
 export default class ObservableArticlesStore {
   @observable list = [];
-  @observable params = {order: null};
+  @observable params = {
+    order_field: null,
+    order_direction: null
+  };
 
   constructor() {
     this.subscribeParamsChanged();

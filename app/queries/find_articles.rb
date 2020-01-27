@@ -3,7 +3,8 @@
 class FindArticles < Service::Base
   subject :scope
   param :search, default: nil
-  param :order, default: nil
+  param :order_field, default: nil
+  param :order_direction, default: nil
   param :grouped_by, default: nil
 
   private
@@ -21,16 +22,16 @@ class FindArticles < Service::Base
   end
 
   def validate_order!
-    return if order.blank?
+    return if order_field.blank?
 
-    unless order[:field].in?(%w[story_name type name created_at updated_at])
+    unless order_field.in?(%w[story_name type name created_at updated_at])
       invalid(
         order_field:
           'Wrong value for order[:field] parameter, should be one of story_name, type, name, created_at, updated_at.'
       )
     end
 
-    return if order[:direction].in?([nil, 'asc', 'desc'])
+    return if order_direction.in?([nil, 'asc', 'desc'])
 
     invalid(order_deirection: 'Wrong value for order[:direction] parameter, should be one of asc, desc.')
   end
@@ -59,12 +60,12 @@ class FindArticles < Service::Base
 
   def apply_order
     @scope =
-      if order.blank?
+      if order_field.blank?
         @scope
-      elsif order[:field] == 'story_name'
-        @scope.order("stories.name #{order[:direction] || 'ASC'}")
+      elsif order_field == 'story_name'
+        @scope.order("stories.name #{order_direction || 'ASC'}")
       else
-        @scope.order(order[:field] => (order[:direction] || 'ASC'))
+        @scope.order(order_field => (order_direction || 'ASC'))
       end.order(:id)
   end
 

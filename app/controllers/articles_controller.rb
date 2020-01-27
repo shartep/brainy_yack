@@ -70,7 +70,7 @@ class ArticlesController < ApplicationController
   end
 
   def clear_cache
-    Rails.cache.clear
+    # Rails.cache.clear
   end
 
   def notify_active_users

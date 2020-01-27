@@ -20,6 +20,6 @@ export default class ObservableArticle {
 
   @action
   destroy() {
-    axios.delete(`/api/v1/articles/${this.article.id}`).then(() => this.store.fetchArticles())
+    axios.delete(`/api/v1/articles/${this.article.id}`)
   }
 }

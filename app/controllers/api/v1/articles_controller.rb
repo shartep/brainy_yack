@@ -5,7 +5,7 @@ module API
       before_action :set_article, only: %i[update destroy]
 
       def index
-        response = Rails.cache.fetch(cache_key(:search, :order, :grouped_by)) do
+        response = Rails.cache.fetch(cache_key(:search, :order_field, :order_direction, :grouped_by)) do
           articles = FindArticles.new(scope: Article.all, **param_hash).call
 
           ArticleSerializer.new(collection: articles, **param_hash).call

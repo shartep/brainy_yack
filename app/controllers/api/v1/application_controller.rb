@@ -15,7 +15,7 @@ module API
       end
 
       def cache_key(*keys)
-        param_hash(keys).then do |params|
+        param_hash(*keys).then do |params|
           keys.map { |k| "#{k}--#{params[k]}" }.join('/')
         end
       end

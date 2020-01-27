@@ -6,9 +6,12 @@ AllCops:
   DisplayCopNames: true
   TargetRubyVersion: 2.7
   Exclude:
+    - 'bin/*'
     - 'db/schema.rb'
     - 'spec/rails_helper.rb'
     - 'spec/spec_helper.rb'
+    - 'node_modules/**/*'
+    - 'vendor/**/*'
 
 Style/FrozenStringLiteralComment:
   Enabled: false
