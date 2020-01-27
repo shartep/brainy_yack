@@ -3,6 +3,7 @@ import { observer } from 'mobx-react'
 import PropTypes from 'prop-types'
 
 import ArticleRow from './ArticleRow'
+import HeaderCell from './HeaderCell'
 
 @observer
 export default class Articles extends React.Component {
@@ -13,18 +14,18 @@ export default class Articles extends React.Component {
   }
 
   render() {
+    const store = this.props.store;
     return (
       <div>
         <table>
           <thead>
             <tr>
-              <td>Story</td>
-              <td>Type</td>
-              <td>Name</td>
-              <td>Text</td>
-              <td>Created</td>
-              <td>Updated</td>
-              <td>Actions</td>
+              <HeaderCell store={store} name='Story' orderKey='story_name' />
+              <HeaderCell store={store} name='Type' orderKey='type' />
+              <HeaderCell store={store} name='Name' orderKey='name' />
+              <HeaderCell store={store} name='Text' orderKey='text' />
+              <HeaderCell store={store} name='Created' orderKey='created_at' />
+              <HeaderCell store={store} name='Updated' orderKey='updated_at' />
             </tr>
           </thead>
           <tbody>
@@ -37,5 +38,5 @@ export default class Articles extends React.Component {
 }
 
 Articles.propTypes = {
-  store: PropTypes.object.isRequired,
+  store: PropTypes.object.isRequired
 };

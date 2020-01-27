@@ -8,8 +8,6 @@ export default class ObservableArticle {
   constructor(store, article) {
     this.store = store;
     this.article = article;
-
-    this.destroy = this.destroy.bind(this);
   }
 
   get id() { return this.article.id }
@@ -21,9 +19,7 @@ export default class ObservableArticle {
   get updated_at() { return this.article.updated_at }
 
   @action
-  destroy(event) {
-    event.preventDefault();
-
+  destroy() {
     axios.delete(`/api/v1/articles/${this.article.id}`).then(() => this.store.fetchArticles())
   }
 }
