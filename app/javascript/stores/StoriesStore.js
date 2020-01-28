@@ -1,8 +1,7 @@
 import axios from 'axios'
-import { observable, computed, action, reaction, autorun, toJS } from 'mobx'
-import _ from 'lodash'
+import { observable, action } from 'mobx'
 
-export default class ObservableStoriesStore {
+class StoriesStore {
   @observable data = [];
 
   @action fetchStories() {
@@ -12,3 +11,5 @@ export default class ObservableStoriesStore {
       .catch(error => console.log(error));
   }
 }
+
+export default new StoriesStore()

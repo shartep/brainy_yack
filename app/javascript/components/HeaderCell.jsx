@@ -10,14 +10,13 @@ export default class HeaderCell extends React.Component {
     return (
       <td>
         {this.props.name}
-        <HeaderSortControl orderKey={this.props.orderKey} params={this.props.params} />
+        <HeaderSortControl orderKey={this.props.orderKey} />
       </td>
     );
   }
 }
 
 HeaderCell.propTypes = {
-  params: PropTypes.object.isRequired,
   name: PropTypes.string.isRequired,
   orderKey: PropTypes.string.isRequired
 };

@@ -1,13 +1,15 @@
-import React               from 'react'
-import { observer }        from 'mobx-react'
-import PropTypes           from 'prop-types'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import React                from 'react'
+import { inject, observer } from 'mobx-react'
+import PropTypes            from 'prop-types'
+import { FontAwesomeIcon }  from '@fortawesome/react-fontawesome'
 
+@inject('articlesStore')
 
 @observer
 export default class HeaderSortControl extends React.Component {
-  get order() { return this.props.params.order }
-  set order(data) { this.props.params.order = data }
+  get params()    { return this.props.articlesStore.params }
+  get order()     { return this.params.order }
+  set order(data) { this.params.order = data }
 
   sortIcon() {
     if (this.order.field != this.props.orderKey) { return 'sort' }
@@ -38,6 +40,5 @@ export default class HeaderSortControl extends React.Component {
 }
 
 HeaderSortControl.propTypes = {
-  params: PropTypes.object.isRequired,
   orderKey: PropTypes.string.isRequired
 };

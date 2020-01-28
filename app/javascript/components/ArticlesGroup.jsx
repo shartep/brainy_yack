@@ -11,7 +11,7 @@ export default class ArticlesGroup extends React.Component {
         <tr><td><h1>{this.props.name}</h1></td></tr>
         {
           this.props.articles.map(article => (
-            <ArticleRow key={article.id} article={article} stories={this.props.stories}/>)
+            <ArticleRow key={article.id} article={article}/>)
           )
         }
       </>
@@ -21,6 +21,5 @@ export default class ArticlesGroup extends React.Component {
 
 ArticlesGroup.propTypes = {
   name: PropTypes.string.isRequired,
-  articles: PropTypes.array.isRequired,
-  stories: PropTypes.array.isRequired
+  articles: PropTypes.array.isRequired
 };

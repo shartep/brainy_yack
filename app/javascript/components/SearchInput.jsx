@@ -1,15 +1,17 @@
-import React        from 'react'
-import { observer } from 'mobx-react'
-import PropTypes    from 'prop-types'
+import React                from 'react'
+import { inject, observer } from 'mobx-react'
+
+@inject('articlesStore')
 
 @observer
 export default class SearchInput extends React.Component {
-  get search() { return this.props.params.search }
-  set search(term) { this.props.params.search = term }
+  get params()     { return this.props.articlesStore.params }
+  get search()     { return this.params.search }
+  set search(term) { this.params.search = term }
 
   onChange(event) {
     const value = event.target.value;
-    if (value.length < 4) { this.search = null }
+    if (value.length < 3) { this.search = null }
     else { this.search = value }
   }
 
@@ -22,7 +24,3 @@ export default class SearchInput extends React.Component {
     );
   }
 }
-
-SearchInput.propTypes = {
-  params: PropTypes.object.isRequired,
-};

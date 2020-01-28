@@ -1,8 +1,8 @@
 import axios from 'axios'
-import { observable, computed, action, reaction, autorun, toJS } from 'mobx'
+import { observable, computed, action, reaction, toJS } from 'mobx'
 import _ from 'lodash'
 
-export default class ObservableArticlesStore {
+class ArticlesStore {
   @observable data = {
     group_by: null,
     collection: []
@@ -42,3 +42,5 @@ export default class ObservableArticlesStore {
       .catch(error => console.log(error));
   }
 }
+
+export default new ArticlesStore()

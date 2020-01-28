@@ -1,8 +1,10 @@
-import React               from 'react'
-import { observer }        from 'mobx-react'
-import PropTypes           from 'prop-types'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import axios               from 'axios'
+import React                from 'react'
+import { observer, inject } from 'mobx-react'
+import PropTypes            from 'prop-types'
+import { FontAwesomeIcon }  from '@fortawesome/react-fontawesome'
+import axios                from 'axios'
+
+@inject('storiesStore')
 
 @observer
 export default class ArticleRow extends React.Component {
@@ -19,6 +21,8 @@ export default class ArticleRow extends React.Component {
       text: this.props.article.text
     };
   }
+
+  get stories() { return this.props.storiesStore.data }
 
   onStoryChange(event) {
     const select = event.target;
@@ -80,7 +84,7 @@ export default class ArticleRow extends React.Component {
   isEditMode() { return this.state.editMode === true }
 
   renderStories() {
-    return this.props.stories.map(story => (<option key={story.id} value={story.id}>{story.name}</option>))
+    return this.stories.map(story => (<option key={story.id} value={story.id}>{story.name}</option>))
   }
 
   renderEditableFields() {
@@ -142,5 +146,4 @@ export default class ArticleRow extends React.Component {
 
 ArticleRow.propTypes = {
   article: PropTypes.object.isRequired,
-  stories: PropTypes.array.isRequired
 };

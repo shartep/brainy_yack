@@ -1,8 +1,9 @@
-import React               from 'react'
-import { observer }        from 'mobx-react'
-import PropTypes           from 'prop-types'
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import axios               from 'axios'
+import React                from 'react'
+import { observer, inject } from 'mobx-react'
+import { FontAwesomeIcon }  from '@fortawesome/react-fontawesome'
+import axios                from 'axios'
+
+@inject('storiesStore')
 
 @observer
 export default class NewArticle extends React.Component {
@@ -19,6 +20,8 @@ export default class NewArticle extends React.Component {
     this.state = this.initialState;
   }
 
+  get stories() { return this.props.storiesStore.data }
+
   cleanState() { this.setState(this.initialState) }
 
   onStoryChange(event) { this.setState({story_id: event.target.value, changed: true}) }
@@ -34,7 +37,7 @@ export default class NewArticle extends React.Component {
     alert(error.response.data.errors);
   }
 
-  saveHandler(event) {
+  submitHandler(event) {
     event.preventDefault();
 
     if (this.state.changed !== true ) { return }
@@ -54,44 +57,46 @@ export default class NewArticle extends React.Component {
   }
 
   renderStories() {
-    return this.props.stories.map(story => (<option key={story.id} value={story.id}>{story.name}</option>))
+    return this.stories.map(story => (<option key={story.id} value={story.id}>{story.name}</option>))
   }
 
   render() {
     return (
-      <>
-        <tr><td><h3>New article:</h3></td></tr>
-        <tr>
-          <td>
-            <select name="story_id" value={this.state.story_id} onChange={this.onStoryChange.bind(this)}>
-              <option value="" disabled>Select story</option>
-              {this.renderStories()}
-            </select>
-          </td>
-          <td>
-            <select name="type" defaultValue={this.state.type} onChange={this.onTypeChange.bind(this)}>
-              <option value="" disabled>Select type</option>
-              <option>blog_post</option>
-              <option>facebook</option>
-              <option>tweet</option>
-            </select>
-          </td>
-          <td><input type="text" name="name" value={this.state.name} onChange={this.onNameChange.bind(this)}/></td>
-          <td><input type="text" name="text" value={this.state.text} onChange={this.onTextChange.bind(this)}/></td>
-          <td></td>
-          <td></td>
-          <td>
-            <a href="#" onClick={this.saveHandler.bind(this)}>
-              <FontAwesomeIcon icon="save" />
-            </a>
-          </td>
-        </tr>
-        <tr><td><h3></h3></td></tr>
-      </>
+      <form onSubmit={this.submitHandler.bind(this)}>
+        <h3>New article:</h3>
+
+        <span>
+          <label htmlFor="story_id">Story:</label>
+          <select name="story_id" value={this.state.story_id} onChange={this.onStoryChange.bind(this)}>
+            <option value="" disabled>Select story</option>
+            {this.renderStories()}
+          </select>
+        </span>
+
+        <span>
+          <label htmlFor="type">Type:</label>
+          <select name="type" defaultValue={this.state.type} onChange={this.onTypeChange.bind(this)}>
+            <option value="" disabled>Select type</option>
+            <option>blog_post</option>
+            <option>facebook</option>
+            <option>tweet</option>
+          </select>
+        </span>
+
+        <span>
+          <label htmlFor="name">Name:</label>
+          <input type="text" name="name" value={this.state.name} onChange={this.onNameChange.bind(this)}/>
+        </span>
+
+        <span>
+          <label htmlFor="text">Text:</label>
+          <textarea name="text" value={this.state.text} onChange={this.onTextChange.bind(this)}/>
+        </span>
+
+        <button type="submit">
+          <FontAwesomeIcon icon="save" />
+        </button>
+      </form>
     );
   }
 }
-
-NewArticle.propTypes = {
-  stories: PropTypes.array.isRequired
-};
