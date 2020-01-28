@@ -1,10 +1,10 @@
-import React from 'react'
+import React        from 'react'
 import { observer } from 'mobx-react'
-import PropTypes from 'prop-types';
+import PropTypes    from 'prop-types'
 
 @observer
 export default class GroupSelect extends React.Component {
-  onChange(event) { this.props.store.params.grouped_by = event.target.value }
+  onChange(event) { this.props.params.grouped_by = event.target.value }
 
   render() {
     return (
@@ -21,5 +21,5 @@ export default class GroupSelect extends React.Component {
 }
 
 GroupSelect.propTypes = {
-  store: PropTypes.object.isRequired,
+  params: PropTypes.object.isRequired,
 };

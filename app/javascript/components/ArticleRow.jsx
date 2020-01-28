@@ -1,8 +1,8 @@
-import React from 'react'
-import { observer } from "mobx-react"
-import PropTypes from "prop-types";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import axios from "axios";
+import React               from 'react'
+import { observer }        from 'mobx-react'
+import PropTypes           from 'prop-types'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import axios               from 'axios'
 
 @observer
 export default class ArticleRow extends React.Component {

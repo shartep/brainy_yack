@@ -1,7 +1,7 @@
-import React from 'react'
-import { observer } from "mobx-react"
-import PropTypes from "prop-types";
-import ArticleRow from "./ArticleRow";
+import React        from 'react'
+import { observer } from 'mobx-react'
+import PropTypes    from 'prop-types'
+import ArticleRow   from './ArticleRow'
 
 @observer
 export default class ArticlesGroup extends React.Component {

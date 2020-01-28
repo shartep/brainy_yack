@@ -148,7 +148,7 @@ module Service
       return if _subject.blank?
 
       value = attrs.fetch(_subject) { raise ArgumentError, "#{_subject} is missing" }
-      raise ArgumentError, "#{_subject} attrs is not present" if value.blank?
+      raise ArgumentError, "#{_subject} attrs is not present" if value.nil?
 
       instance_variable_set "@#{_subject}", value
     end

@@ -1,32 +1,31 @@
-import React from 'react'
-import { observer } from 'mobx-react'
-import PropTypes from 'prop-types';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React               from 'react'
+import { observer }        from 'mobx-react'
+import PropTypes           from 'prop-types'
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+
 
 @observer
 export default class HeaderSortControl extends React.Component {
-  sortIcon() {
-    const order_field = this.props.store.params.order_field;
-    const order_direction = this.props.store.params.order_direction;
-    if (order_field != this.props.orderKey) { return 'sort' }
+  get order() { return this.props.params.order }
+  set order(data) { this.props.params.order = data }
 
-    if (order_direction === 'desc') { return 'sort-down' }
-    else { return 'sort-up' }
+  sortIcon() {
+    if (this.order.field != this.props.orderKey) { return 'sort' }
+    if (this.order.direction === 'desc') { return 'sort-down' }
+    return 'sort-up'
   }
 
   onClick(event) {
     event.preventDefault();
 
-    let order_field = this.props.orderKey;
-    let order_direction = null;
+    let field = this.props.orderKey;
+    let direction = null;
 
-    if (this.props.store.params.order_field === null || this.props.store.params.order_field != order_field) {
-      order_direction = 'asc'
-    } else if (this.props.store.params.order_direction === 'asc') { order_direction = 'desc' }
-    else { order_field = null }
+    if (this.order.field === null || this.order.field != field) { direction = 'asc' }
+    else if (this.order.direction === 'asc') { direction = 'desc' }
+    else { field = null }
 
-    this.props.store.params =
-      {...this.props.store.params, ...{order_field: order_field, order_direction: order_direction}};
+    this.order = {field: field, direction: direction};
   }
 
   render() {
@@ -39,6 +38,6 @@ export default class HeaderSortControl extends React.Component {
 }
 
 HeaderSortControl.propTypes = {
-  store: PropTypes.object.isRequired,
+  params: PropTypes.object.isRequired,
   orderKey: PropTypes.string.isRequired
 };

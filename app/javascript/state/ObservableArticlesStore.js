@@ -8,8 +8,11 @@ export default class ObservableArticlesStore {
     collection: []
   };
   @observable params = {
-    order_field: null,
-    order_direction: null,
+    search: null,
+    order: {
+      field: null,
+      direction: null
+    },
     grouped_by: null
   };
 
@@ -25,7 +28,11 @@ export default class ObservableArticlesStore {
   }
 
   @computed get requestParams() {
-    return _.pickBy(toJS(this.params), (v) => !_.isNil(v) && v !== '')
+    let params = toJS(this.params);
+    params.order_field = params.order.field;
+    params.order_direction = params.order.direction;
+
+    return _.pickBy(params, (v, k) => !_.isNil(v) && v !== '' && k !== 'order')
   }
 
   @action fetchArticles() {

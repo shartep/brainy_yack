@@ -1,6 +1,6 @@
-import React from 'react'
+import React        from 'react'
 import { observer } from 'mobx-react'
-import PropTypes from 'prop-types';
+import PropTypes    from 'prop-types'
 
 import HeaderSortControl from './HeaderSortControl'
 
@@ -10,14 +10,14 @@ export default class HeaderCell extends React.Component {
     return (
       <td>
         {this.props.name}
-        <HeaderSortControl orderKey={this.props.orderKey} store={this.props.store} />
+        <HeaderSortControl orderKey={this.props.orderKey} params={this.props.params} />
       </td>
     );
   }
 }
 
 HeaderCell.propTypes = {
-  store: PropTypes.object.isRequired,
+  params: PropTypes.object.isRequired,
   name: PropTypes.string.isRequired,
   orderKey: PropTypes.string.isRequired
 };
