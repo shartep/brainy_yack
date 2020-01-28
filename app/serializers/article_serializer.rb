@@ -6,13 +6,10 @@ class ArticleSerializer < Service::Base
   private
 
   def _call
-    if grouped_by.blank?
-      {articles: collection.map(&method(:record_serializer))}
-    elsif grouped_by == 'story'
-      group_by_story
-    else
-      group_by_field
-    end
+    {
+      group_by: grouped_by,
+      collection: serialized_collection
+    }
   end
 
   def validate!
@@ -27,21 +24,27 @@ class ArticleSerializer < Service::Base
     )
   end
 
+  def serialized_collection
+    if grouped_by.blank?
+      collection.map(&method(:record_serializer))
+    elsif grouped_by == 'story'
+      group_by_story
+    else
+      group_by_field
+    end
+  end
+
   def group_by_story
-    {
-      grouped_by => collection.transform_values do |group|
-        group[:article] = record_serializer(group[:article])
-        group
-      end
-    }
+    collection.transform_values do |group|
+      group[:article] = record_serializer(group[:article])
+      group
+    end
   end
 
   def group_by_field
-    {
-      grouped_by => collection.transform_values do |scope|
-        scope.map(&method(:record_serializer))
-      end
-    }
+    collection.transform_values do |scope|
+      scope.map(&method(:record_serializer))
+    end
   end
 
   def record_serializer(article)

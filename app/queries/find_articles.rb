@@ -24,10 +24,10 @@ class FindArticles < Service::Base
   def validate_order!
     return if order_field.blank?
 
-    unless order_field.in?(%w[story_name type name created_at updated_at])
+    unless order_field.in?(%w[story_name type name text created_at updated_at])
       invalid(
         order_field:
-          'Wrong value for order[:field] parameter, should be one of story_name, type, name, created_at, updated_at.'
+          'Wrong value for order[:field] parameter, should be one of story_name, type, name, text, created_at, updated_at.'
       )
     end
 
@@ -45,16 +45,16 @@ class FindArticles < Service::Base
   end
 
   def apply_includes
-    @scope = @scope.includes(:story)
+    @scope = @scope.includes(:story) if grouped_by.blank?
   end
 
   def search_filter
-    return if @search.blank?
+    return if search.blank?
 
     # Postgres full text search solution
     @scope = @scope.where(
       "to_tsvector('english', articles.name || ' ' || articles.text) @@ to_tsquery(?)",
-      @search.gsub(' ', ' & ')
+      search.gsub(' ', ' & ')
     )
   end
 
@@ -90,7 +90,7 @@ class FindArticles < Service::Base
             .group('group_field')
             .reorder('group_field desc')
     ).to_h do |group_field:, article_ids:|
-      [group_field.strftime('%F'), @scope.where(id: article_ids)]
+      [group_field.strftime('%F'), @scope.includes(:story).where(id: article_ids)]
     end
   end
 
@@ -101,7 +101,7 @@ class FindArticles < Service::Base
             .group('group_field')
             .reorder('group_field')
     ).to_h do |group_field:, article_ids:|
-      [group_field, @scope.where(id: article_ids)]
+      [group_field, @scope.includes(:story).where(id: article_ids)]
     end
   end
 

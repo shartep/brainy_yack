@@ -1,22 +1,37 @@
 import React from 'react'
 import { observer } from 'mobx-react'
+import { toJS } from 'mobx'
 import PropTypes from 'prop-types'
+import _ from 'lodash'
 
 import ArticleRow from './ArticleRow'
 import HeaderCell from './HeaderCell'
+import GroupSelect from './GroupSelect'
+import ArticlesGroup from './ArticlesGroup'
+import StoryGroup from './StoryGroup'
 
 @observer
 export default class Articles extends React.Component {
   componentDidMount() { this.props.store.fetchArticles() }
 
-  renderArticles() {
-    return this.props.store.list.map(article => (<ArticleRow key={article.id} article={article} />))
+  renderData() {
+    if (this.props.store.data.group_by === null) {
+      return this.props.store.data.collection.map(article => (
+        <ArticleRow key={article.id} article={article}/>))
+    } else if (this.props.store.data.group_by === 'story') {
+      return _.map(toJS(this.props.store.data.collection), (storyData, story) => (<StoryGroup key={story} name={story} storyData={storyData} />))
+    } else {
+      return _.map(toJS(this.props.store.data.collection), (articles, group) => (<ArticlesGroup key={group} name={group} articles={articles} />))
+    }
   }
 
   render() {
     const store = this.props.store;
     return (
       <div>
+        <GroupSelect store={store}/>
+        <br/>
+        <br/>
         <table>
           <thead>
             <tr>
@@ -29,7 +44,7 @@ export default class Articles extends React.Component {
             </tr>
           </thead>
           <tbody>
-            {this.renderArticles()}
+            {this.renderData()}
           </tbody>
         </table>
       </div>

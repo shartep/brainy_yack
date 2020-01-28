@@ -20,11 +20,13 @@ export default class HeaderSortControl extends React.Component {
     let order_field = this.props.orderKey;
     let order_direction = null;
 
-    if (this.props.store.params.order_field === null) { order_direction = 'desc' }
-    else if (this.props.store.params.order_direction === 'desc') { order_direction = 'asc' }
+    if (this.props.store.params.order_field === null || this.props.store.params.order_field != order_field) {
+      order_direction = 'asc'
+    } else if (this.props.store.params.order_direction === 'asc') { order_direction = 'desc' }
     else { order_field = null }
 
-    this.props.store.params = {order_field: order_field, order_direction: order_direction};
+    this.props.store.params =
+      {...this.props.store.params, ...{order_field: order_field, order_direction: order_direction}};
   }
 
   render() {
