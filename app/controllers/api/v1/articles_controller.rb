@@ -25,7 +25,7 @@ module API
           clear_cache
           notify_active_users
         else
-          render json: {errors: @article.errors.map(&:message)}, status: :unprocessable_entity
+          render json: {errors: @article.errors.full_messages}, status: :unprocessable_entity
         end
       end
 
@@ -36,7 +36,7 @@ module API
           clear_cache
           notify_active_users
         else
-          render json: {errors: @article.errors.map(&:message)}, status: :unprocessable_entity
+          render json: {errors: @article.errors.full_messages}, status: :unprocessable_entity
         end
       end
 
@@ -58,14 +58,6 @@ module API
       # Only allow a trusted parameter "white list" through.
       def article_params
         params.require(:article).permit(:type, :name, :text, :story_id)
-      end
-
-      def clear_cache
-        Rails.cache.clear
-      end
-
-      def notify_active_users
-        # implement notification via ActiveCable here
       end
     end
   end

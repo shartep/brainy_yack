@@ -50,6 +50,7 @@ class ArticleSerializer < Service::Base
   def record_serializer(article)
     {
       id: article.id,
+      story_id: article.story.id,
       story_name: article.story.name,
       type: article.type,
       name: article.name,

@@ -19,6 +19,14 @@ module API
           keys.map { |k| "#{k}--#{params[k]}" }.join('/')
         end
       end
+
+      def clear_cache
+        Rails.cache.clear
+      end
+
+      def notify_active_users
+        # implement notification via ActiveCable here
+      end
     end
   end
 end

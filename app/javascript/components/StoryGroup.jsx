@@ -14,7 +14,7 @@ export default class StoryGroup extends React.Component {
           <td>Articles count: {storyData.article_count}</td>
           <td>Articles types count: {storyData.article_type_count}</td>
         </tr>
-        <ArticleRow key={storyData.article.id} article={storyData.article}/>
+        <ArticleRow key={storyData.article.id} article={storyData.article} stories={this.stories}/>
       </>
     );
   }
@@ -22,5 +22,6 @@ export default class StoryGroup extends React.Component {
 
 StoryGroup.propTypes = {
   name: PropTypes.string.isRequired,
-  storyData: PropTypes.object.isRequired
+  storyData: PropTypes.object.isRequired,
+  stories: PropTypes.array.isRequired
 };

@@ -12,10 +12,22 @@ export default class ArticleRow extends React.Component {
     this.state = {
       editMode: false,
       changed: false,
-      type: props.article.type,
-      name: props.article.name,
-      text: props.article.text
+      story_id: this.props.article.story_id,
+      story_name: this.props.article.story_name,
+      type: this.props.article.type,
+      name: this.props.article.name,
+      text: this.props.article.text
     };
+  }
+
+  onStoryChange(event) {
+    const select = event.target;
+    const params = {
+      story_id: select.value,
+      story_name: select.options[select.selectedIndex].text,
+      changed: true
+    };
+    this.setState(params);
   }
 
   onTypeChange(event) { this.setState({type: event.target.value, changed: true}) }
@@ -24,11 +36,17 @@ export default class ArticleRow extends React.Component {
 
   onTextChange(event) { this.setState({text: event.target.value, changed: true}) }
 
+  errorHandler(error) {
+    console.log(error);
+    alert(error.response.data.errors);
+  }
+
   saveChanges() {
     if (this.state.changed !== true ) { return }
 
     const params = {
       article: {
+        story_id: this.state.story_id,
         type: this.state.type,
         name: this.state.name,
         text: this.state.text
@@ -36,14 +54,15 @@ export default class ArticleRow extends React.Component {
     };
     axios
       .put(`/api/v1/articles/${this.props.article.id}`, params)
-      .catch(error => console.log(error));
+      .then(this.toggleEditMode.bind(this))
+      .catch(this.errorHandler);
   }
 
   editHandler(event) {
     event.preventDefault();
 
     if (this.isEditMode()) { this.saveChanges() }
-    this.toggleEditMode();
+    else { this.toggleEditMode() }
   }
 
   destroyHandler(event) {
@@ -60,6 +79,10 @@ export default class ArticleRow extends React.Component {
 
   isEditMode() { return this.state.editMode === true }
 
+  renderStories() {
+    return this.props.stories.map(story => (<option key={story.id} value={story.id}>{story.name}</option>))
+  }
+
   renderEditableFields() {
     if (this.isEditMode()) { return this.renderEditMode() }
     else { return this.renderStaticMode() }
@@ -68,6 +91,11 @@ export default class ArticleRow extends React.Component {
   renderEditMode() {
     return(
       <>
+        <td>
+          <select name="story_id" value={this.state.story_id} onChange={this.onStoryChange.bind(this)}>
+            {this.renderStories()}
+          </select>
+        </td>
         <td>
           <select name="type" defaultValue={this.state.type} onChange={this.onTypeChange.bind(this)}>
             <option>blog_post</option>
@@ -84,6 +112,7 @@ export default class ArticleRow extends React.Component {
   renderStaticMode() {
     return(
       <>
+        <td>{this.state.story_name}</td>
         <td>{this.state.type}</td>
         <td>{this.state.name}</td>
         <td>{this.state.text}</td>
@@ -95,7 +124,6 @@ export default class ArticleRow extends React.Component {
     const article = this.props.article;
     return (
       <tr>
-        <td>{article.story_name}</td>
         {this.renderEditableFields(article)}
         <td>{article.created_at}</td>
         <td>{article.updated_at}</td>
@@ -114,4 +142,5 @@ export default class ArticleRow extends React.Component {
 
 ArticleRow.propTypes = {
   article: PropTypes.object.isRequired,
+  stories: PropTypes.array.isRequired
 };

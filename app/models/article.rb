@@ -6,5 +6,7 @@ class Article < ApplicationRecord
 
   enum type: TYPES.to_h { |t| [t, t.to_s] }, _suffix: true
 
+  validates :type, presence: true
+
   belongs_to :story
 end

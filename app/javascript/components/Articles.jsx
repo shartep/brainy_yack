@@ -8,30 +8,35 @@ import ArticlesGroup from './ArticlesGroup'
 import ArticleRow    from './ArticleRow'
 import GroupSelect   from './GroupSelect'
 import HeaderCell    from './HeaderCell'
+import NewArticle    from './NewArticle'
 import StoryGroup    from './StoryGroup'
 import SearchInput   from './SearchInput'
 
 @observer
 export default class Articles extends React.Component {
-  componentDidMount() { this.props.store.fetchArticles() }
+  componentDidMount() {
+    this.props.store.fetchArticles();
+    this.props.storiesStore.fetchStories();
+  }
 
-  get data()   { return this.props.store.data }
-  get params() { return this.props.store.params }
+  get stories() { return this.props.storiesStore.data }
+  get data()    { return this.props.store.data }
+  get params()  { return this.props.store.params }
 
   renderData() {
     if (this.data.group_by === null) {
       return this.data.collection.map(
-        article => (<ArticleRow key={article.id} article={article}/>)
+        article => (<ArticleRow key={article.id} article={article} stories={this.stories}/>)
       )
     } else if (this.data.group_by === 'story') {
       return _.map(
         toJS(this.data.collection),
-        (storyData, story) => (<StoryGroup key={story} name={story} storyData={storyData} />)
+        (storyData, story) => (<StoryGroup key={story} name={story} storyData={storyData} stories={this.stories}/>)
       )
     } else {
       return _.map(
         toJS(this.data.collection),
-        (articles, group) => (<ArticlesGroup key={group} name={group} articles={articles} />)
+        (articles, group) => (<ArticlesGroup key={group} name={group} articles={articles} stories={this.stories}/>)
       )
     }
   }
@@ -57,6 +62,7 @@ export default class Articles extends React.Component {
             </tr>
           </thead>
           <tbody>
+            <NewArticle stories={this.stories}/>
             {this.renderData()}
           </tbody>
         </table>
@@ -66,5 +72,6 @@ export default class Articles extends React.Component {
 }
 
 Articles.propTypes = {
-  store: PropTypes.object.isRequired
+  store: PropTypes.object.isRequired,
+  storiesStore: PropTypes.object.isRequired
 };

@@ -8,6 +8,7 @@ import {
 import Articles                from './Articles'
 import Home                    from './Home'
 import ObservableArticlesStore from '../state/ObservableArticlesStore'
+import ObservableStoriesStore  from '../state/ObservableStoriesStore'
 import Stories                 from './Stories'
 
 library.add(faTrash, faSort, faSortUp, faSortDown, faEdit, faSave);
@@ -16,7 +17,7 @@ const App = props => (
   <div>
     <Switch>
       <Route exact path="/" component={Home} />
-      <Route exact path="/articles" render={() => <Articles store={new ObservableArticlesStore()}/>} />
+      <Route exact path="/articles" render={() => <Articles store={new ObservableArticlesStore()} storiesStore={new ObservableStoriesStore()}/>} />
       <Route exact path="/stories" component={Stories} />
     </Switch>
   </div>

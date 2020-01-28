@@ -6,11 +6,14 @@ import ArticleRow   from './ArticleRow'
 @observer
 export default class ArticlesGroup extends React.Component {
   render() {
-    const article = this.props.articles[0];
     return (
       <>
         <tr><td><h1>{this.props.name}</h1></td></tr>
-        {this.props.articles.map(article => (<ArticleRow key={article.id} article={article}/>))}
+        {
+          this.props.articles.map(article => (
+            <ArticleRow key={article.id} article={article} stories={this.props.stories}/>)
+          )
+        }
       </>
     );
   }
@@ -18,5 +21,6 @@ export default class ArticlesGroup extends React.Component {
 
 ArticlesGroup.propTypes = {
   name: PropTypes.string.isRequired,
-  articles: PropTypes.array.isRequired
+  articles: PropTypes.array.isRequired,
+  stories: PropTypes.array.isRequired
 };
