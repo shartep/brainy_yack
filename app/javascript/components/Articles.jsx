@@ -53,6 +53,7 @@ export default class Articles extends React.Component {
               <HeaderCell params={params} name='Text' orderKey='text' />
               <HeaderCell params={params} name='Created' orderKey='created_at' />
               <HeaderCell params={params} name='Updated' orderKey='updated_at' />
+              <td>Actions</td>
             </tr>
           </thead>
           <tbody>
