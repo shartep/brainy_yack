@@ -46,6 +46,18 @@ class ArticlesStore {
     this.groupBy = groupBy;
     this.collection = collection;
   }
+
+  addArticle(article) {
+    this.articlesApi.post({action: 'create', ...article})
+  }
+
+  updateArticle(article) {
+    this.articlesApi.post({action: 'update', ...article})
+  }
+
+  deleteArticle(articleId) {
+    this.articlesApi.post({action: 'destroy', id: articleId})
+  }
 }
 
 export default new ArticlesStore()

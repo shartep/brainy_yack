@@ -3,7 +3,7 @@ import { observer, inject } from 'mobx-react'
 import { FontAwesomeIcon }  from '@fortawesome/react-fontawesome'
 import { computed }         from 'mobx'
 
-@inject('storiesStore')
+@inject('articlesStore', 'storiesStore')
 
 @observer
 export default class NewArticle extends React.Component {
@@ -20,6 +20,7 @@ export default class NewArticle extends React.Component {
     this.state = this.initialState;
   }
 
+  @computed get store()   { return this.props.articlesStore }
   @computed get stories() { return this.props.storiesStore.data }
 
   cleanState() { this.setState(this.initialState) }
@@ -32,28 +33,18 @@ export default class NewArticle extends React.Component {
 
   onTextChange(event) { this.setState({text: event.target.value, changed: true}) }
 
-  errorHandler(error) {
-    console.log(error);
-    alert(error.response.data.errors);
-  }
-
   submitHandler(event) {
     event.preventDefault();
 
     if (this.state.changed !== true ) { return }
 
-    const params = {
-      article: {
-        story_id: this.state.story_id,
-        type: this.state.type,
-        name: this.state.name,
-        text: this.state.text
-      }
-    };
-    axios
-      .post(`/api/v1/articles`, params)
-      .then(this.cleanState.bind(this))
-      .catch(this.errorHandler);
+    this.store.addArticle({
+      story_id: this.state.story_id,
+      type: this.state.type,
+      name: this.state.name,
+      text: this.state.text
+    });
+    this.cleanState();
   }
 
   renderStories() {

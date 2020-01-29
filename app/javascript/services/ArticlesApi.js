@@ -1,7 +1,5 @@
 import axios from 'axios'
-// import _     from 'lodash'
 import cable from '../channels/consumer'
-// import { observable, computed, action, reaction, toJS } from 'mobx'
 
 export default class ArticlesApi {
   constructor(callback) {
@@ -15,7 +13,5 @@ export default class ArticlesApi {
             .catch(error => console.log(error));
   }
 
-  post(article) {
-    this.subscription.send(article)
-  }
+  post(article) { this.subscription.send(article) }
 }

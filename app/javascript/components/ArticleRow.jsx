@@ -2,10 +2,9 @@ import React                from 'react'
 import { observer, inject } from 'mobx-react'
 import PropTypes            from 'prop-types'
 import { FontAwesomeIcon }  from '@fortawesome/react-fontawesome'
-import axios                from 'axios'
 import { computed }         from 'mobx'
 
-@inject('storiesStore')
+@inject('articlesStore', 'storiesStore')
 
 @observer
 export default class ArticleRow extends React.Component {
@@ -23,6 +22,7 @@ export default class ArticleRow extends React.Component {
     };
   }
 
+  @computed get store()   { return this.props.articlesStore }
   @computed get stories() { return this.props.storiesStore.data }
 
   onStoryChange(event) {
@@ -41,26 +41,17 @@ export default class ArticleRow extends React.Component {
 
   onTextChange(event) { this.setState({text: event.target.value, changed: true}) }
 
-  errorHandler(error) {
-    console.log(error);
-    alert(error.response.data.errors);
-  }
-
   saveChanges() {
     if (this.state.changed !== true ) { return this.toggleEditMode() }
 
-    const params = {
-      article: {
-        story_id: this.state.story_id,
-        type: this.state.type,
-        name: this.state.name,
-        text: this.state.text
-      }
-    };
-    axios
-      .put(`/api/v1/articles/${this.props.article.id}`, params)
-      .then(this.toggleEditMode.bind(this))
-      .catch(this.errorHandler);
+    this.store.updateArticle({
+      id: this.props.article.id,
+      story_id: this.state.story_id,
+      type: this.state.type,
+      name: this.state.name,
+      text: this.state.text
+    });
+    this.toggleEditMode();
   }
 
   editHandler(event) {
@@ -72,7 +63,7 @@ export default class ArticleRow extends React.Component {
 
   destroyHandler(event) {
     event.preventDefault();
-    axios.delete(`/api/v1/articles/${this.props.article.id}`)
+    this.store.deleteArticle(this.props.article.id);
   }
 
   updateIcon() {
