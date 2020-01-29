@@ -1,15 +1,23 @@
-import axios from 'axios'
+import StoriesApi from '../services/StoriesApi'
 import { observable, action } from 'mobx'
 
 class StoriesStore {
   @observable data = [];
 
-  @action fetchStories() {
-    axios
-      .get('/api/v1/stories')
-      .then(response => this.data = response.data)
-      .catch(error => console.log(error));
+  constructor() {
+    this.storiesApi = new StoriesApi(this.fetchStories.bind(this))
   }
+
+  fetchStories() {
+    this.storiesApi.fetchStories().then(this.replaceData.bind(this))
+  }
+
+  replaceData(resp) {
+    this.data = [];
+    this.setData(resp);
+  }
+
+  @action setData(collection) { this.data = collection }
 }
 
 export default new StoriesStore()

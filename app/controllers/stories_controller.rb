@@ -23,6 +23,9 @@ class StoriesController < ApplicationController
     @story = Story.new(story_params)
 
     if @story.save
+      clear_cache
+      notify_active_users
+
       redirect_to @story, notice: 'Story was successfully created.'
     else
       render :new
@@ -32,6 +35,9 @@ class StoriesController < ApplicationController
   # PATCH/PUT /stories/1
   def update
     if @story.update(story_params)
+      clear_cache
+      notify_active_users
+
       redirect_to @story, notice: 'Story was successfully updated.'
     else
       render :edit
@@ -41,6 +47,10 @@ class StoriesController < ApplicationController
   # DELETE /stories/1
   def destroy
     @story.destroy
+
+    clear_cache
+    notify_active_users
+
     redirect_to stories_url, notice: 'Story was successfully destroyed.'
   end
 
@@ -54,5 +64,9 @@ class StoriesController < ApplicationController
   # Only allow a trusted parameter "white list" through.
   def story_params
     params.require(:story).permit(:name)
+  end
+
+  def notify_channel
+    'stories:stories'
   end
 end
