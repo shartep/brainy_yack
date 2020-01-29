@@ -27,7 +27,8 @@ class FindArticles < Service::Base
     unless order_field.in?(%w[story_name type name text created_at updated_at])
       invalid(
         order_field:
-          'Wrong value for order[:field] parameter, should be one of story_name, type, name, text, created_at, updated_at.'
+          'Wrong value for order[:field] parameter, should be one of story_name, type, name, text, '\
+          'created_at, updated_at.'
       )
     end
 

@@ -1,13 +1,13 @@
 require 'rails_helper'
 
 RSpec.describe 'articles', type: :request do
-  describe 'GET /articles' do
+  describe 'GET /api/v1/articles' do
     subject(:resp) do
       request
       JSON.parse(response.body)
     end
 
-    let(:request) { get '/articles', params: params }
+    let(:request) { get '/api/v1/articles', params: params }
     let(:params) { {} }
 
     let(:art0_params) { {} }
@@ -43,6 +43,7 @@ RSpec.describe 'articles', type: :request do
     def serialize_article(article)
       {
         'id' => article.id,
+        'story_id' => article.story.id,
         'story_name' => article.story.name,
         'type' => article.type,
         'name' => article.name,
@@ -64,17 +65,18 @@ RSpec.describe 'articles', type: :request do
     describe 'no filtering and ordering' do
       let(:expected_body) do
         {
-          'articles' => [
-            serialize_article(article_0),
-            serialize_article(article_1),
-            serialize_article(article_2),
-            serialize_article(article_3),
-            serialize_article(article_4),
-            serialize_article(article_5),
-            serialize_article(article_6),
-            serialize_article(article_7),
+          'group_by' => nil,
+          'collection' => [
+            serialize_article(article_9),
             serialize_article(article_8),
-            serialize_article(article_9)
+            serialize_article(article_7),
+            serialize_article(article_6),
+            serialize_article(article_5),
+            serialize_article(article_4),
+            serialize_article(article_3),
+            serialize_article(article_2),
+            serialize_article(article_1),
+            serialize_article(article_0)
           ]
         }
       end
@@ -91,10 +93,11 @@ RSpec.describe 'articles', type: :request do
 
       let(:expected_body) do
         {
-          'articles' => [
-            serialize_article(article_2),
+          'group_by' => nil,
+          'collection' => [
+            serialize_article(article_4),
             serialize_article(article_3),
-            serialize_article(article_4)
+            serialize_article(article_2)
           ]
         }
       end
@@ -103,31 +106,32 @@ RSpec.describe 'articles', type: :request do
     end
 
     describe 'sorted by' do
-      let(:params) { {order: {field: field, direction: direction}} }
+      let(:params) { {order_field: field, order_direction: direction} }
       let(:field) { :created_at }
       let(:direction) { :asc }
 
       let(:expected_body) do
         {
-          'articles' => [
-            serialize_article(article_1),
-            serialize_article(article_4),
+          'group_by' => nil,
+          'collection' => [
             serialize_article(article_7),
+            serialize_article(article_4),
+            serialize_article(article_1),
 
-            serialize_article(article_0),
-            serialize_article(article_2),
             serialize_article(article_5),
+            serialize_article(article_2),
+            serialize_article(article_0),
 
-            serialize_article(article_3),
-            serialize_article(article_6),
+            serialize_article(article_9),
             serialize_article(article_8),
-            serialize_article(article_9)
+            serialize_article(article_6),
+            serialize_article(article_3)
           ]
         }
       end
 
       describe 'wrong parameter' do
-        let(:params) { {order: {field: :title, direction: :up}} }
+        let(:params) { {order_field: :title, order_direction: :up} }
 
         context 'with unprocessable status' do
           subject do
@@ -135,7 +139,7 @@ RSpec.describe 'articles', type: :request do
             response.status
           end
 
-          it { is_expected.to eq 400 }
+          it { is_expected.to eq 422 }
         end
 
         context 'with error message' do
@@ -146,9 +150,10 @@ RSpec.describe 'articles', type: :request do
 
           let(:expected_body) do
             {
-              'status' => 'error',
-              'message' => 'Wrong value for order[:field] parameter, should be one of story_name, '\
-                           'type, name, created_at, updated_at.'
+              'errors' => {
+                'order_field' => 'Wrong value for order[:field] parameter, should be one of story_name, '\
+                                 'type, name, text, created_at, updated_at.'
+              }
             }
           end
 
@@ -198,16 +203,16 @@ RSpec.describe 'articles', type: :request do
       describe 'name' do
         let(:field) { :name }
 
-        let(:art0_params) { {name: 'Dog'} }
-        let(:art1_params) { {name: 'Apple'} }
+        let(:art0_params) { {name: 'Interesting'} }
+        let(:art1_params) { {name: 'Cloud'} }
         let(:art2_params) { {name: 'Final'} }
-        let(:art3_params) { {name: 'gold'} }
+        let(:art3_params) { {name: 'people'} }
         let(:art4_params) { {name: 'Big'} }
-        let(:art5_params) { {name: 'Interesting'} }
-        let(:art6_params) { {name: 'human'} }
-        let(:art7_params) { {name: 'Cloud'} }
-        let(:art8_params) { {name: 'lamp'} }
-        let(:art9_params) { {name: 'people'} }
+        let(:art5_params) { {name: 'Dog'} }
+        let(:art6_params) { {name: 'lamp'} }
+        let(:art7_params) { {name: 'Apple'} }
+        let(:art8_params) { {name: 'human'} }
+        let(:art9_params) { {name: 'gold'} }
 
         it { is_expected.to include(expected_body) }
       end
@@ -218,7 +223,8 @@ RSpec.describe 'articles', type: :request do
 
         let(:expected_body) do
           {
-            'articles' => [
+            'group_by' => nil,
+            'collection' => [
               serialize_article(article_9),
               serialize_article(article_8),
               serialize_article(article_7),
@@ -241,7 +247,8 @@ RSpec.describe 'articles', type: :request do
 
         let(:expected_body) do
           {
-            'articles' => [
+            'group_by' => nil,
+            'collection' => [
               serialize_article(article_0),
               serialize_article(article_1),
               serialize_article(article_2),
@@ -272,7 +279,7 @@ RSpec.describe 'articles', type: :request do
             response.status
           end
 
-          it { is_expected.to eq 400 }
+          it { is_expected.to eq 422 }
         end
 
         context 'with error message' do
@@ -283,8 +290,9 @@ RSpec.describe 'articles', type: :request do
 
           let(:expected_body) do
             {
-              'status' => 'error',
-              'message' => 'Wrong grouped_by parameter, should be one of type, name, created_at, updated_at, story'
+              'errors' => {
+                'grouped_by' => 'Wrong grouped_by parameter, should be one of type, name, created_at, updated_at, story'
+              }
             }
           end
 
@@ -308,22 +316,23 @@ RSpec.describe 'articles', type: :request do
 
         let(:expected_body) do
           {
-            'type' => {
+            'group_by' => 'type',
+            'collection' => {
               'blog_post' => [
-                serialize_article(article_3),
-                serialize_article(article_6),
+                serialize_article(article_9),
                 serialize_article(article_8),
-                serialize_article(article_9)
+                serialize_article(article_6),
+                serialize_article(article_3)
               ],
               'facebook' => [
-                serialize_article(article_0),
+                serialize_article(article_5),
                 serialize_article(article_2),
-                serialize_article(article_5)
+                serialize_article(article_0)
               ],
               'tweet' => [
-                serialize_article(article_1),
+                serialize_article(article_7),
                 serialize_article(article_4),
-                serialize_article(article_7)
+                serialize_article(article_1)
               ]
             }
           }
@@ -348,22 +357,23 @@ RSpec.describe 'articles', type: :request do
 
         let(:expected_body) do
           {
-            'name' => {
+            'group_by' => 'name',
+            'collection' => {
               'Apple' => [
-                serialize_article(article_3),
-                serialize_article(article_6),
+                serialize_article(article_9),
                 serialize_article(article_8),
-                serialize_article(article_9)
+                serialize_article(article_6),
+                serialize_article(article_3)
               ],
               'Dog' => [
-                serialize_article(article_0),
+                serialize_article(article_5),
                 serialize_article(article_2),
-                serialize_article(article_5)
+                serialize_article(article_0)
               ],
               'Interesting' => [
-                serialize_article(article_1),
+                serialize_article(article_7),
                 serialize_article(article_4),
-                serialize_article(article_7)
+                serialize_article(article_1)
               ]
             }
           }
@@ -388,24 +398,25 @@ RSpec.describe 'articles', type: :request do
 
         let(:expected_body) do
           {
-            'created_at' => {
+            'group_by' => 'created_at',
+            'collection' => {
               '2019-12-03' => [
                 serialize_article(article_9)
               ],
               '2019-11-10' => [
-                serialize_article(article_6),
+                serialize_article(article_8),
                 serialize_article(article_7),
-                serialize_article(article_8)
+                serialize_article(article_6)
               ],
               '2019-10-11' => [
-                serialize_article(article_3),
+                serialize_article(article_5),
                 serialize_article(article_4),
-                serialize_article(article_5)
+                serialize_article(article_3)
               ],
               '2019-09-11' => [
-                serialize_article(article_0),
+                serialize_article(article_2),
                 serialize_article(article_1),
-                serialize_article(article_2)
+                serialize_article(article_0)
               ]
             }
           }
@@ -430,24 +441,25 @@ RSpec.describe 'articles', type: :request do
 
         let(:expected_body) do
           {
-            'updated_at' => {
+            'group_by' => 'updated_at',
+            'collection' => {
               '2019-12-05' => [
                 serialize_article(article_9)
               ],
               '2019-11-20' => [
-                serialize_article(article_6),
+                serialize_article(article_8),
                 serialize_article(article_7),
-                serialize_article(article_8)
+                serialize_article(article_6)
               ],
               '2019-10-21' => [
-                serialize_article(article_3),
+                serialize_article(article_5),
                 serialize_article(article_4),
-                serialize_article(article_5)
+                serialize_article(article_3)
               ],
               '2019-09-21' => [
-                serialize_article(article_0),
+                serialize_article(article_2),
                 serialize_article(article_1),
-                serialize_article(article_2)
+                serialize_article(article_0)
               ]
             }
           }
@@ -476,7 +488,8 @@ RSpec.describe 'articles', type: :request do
 
         let(:expected_body) do
           {
-            'story' => {
+            'group_by' => 'story',
+            'collection' => {
               'Big story' => {
                 'article_count' => 3,
                 'article_type_count' => 3,
@@ -512,7 +525,8 @@ RSpec.describe 'articles', type: :request do
 
       let(:expected_body) do
         {
-          'story' => {
+          'group_by' => 'story',
+          'collection' => {
             'Big story' => {
               'article_count' => 1,
               'article_type_count' => 1,
