@@ -15,5 +15,26 @@ export default class ArticlesApi {
             .catch(error => console.log(error));
   }
 
-  post(article) { this.subscription.send(article) }
+  create(article) {
+    return axios.post(this.modelPath, article)
+                .then(response => response.data)
+                .catch(this.errorHandler);
+  }
+
+  update(article) {
+    return axios.patch(`${this.modelPath}/${article.id}`, article)
+                .then(response => response.data)
+                .catch(this.errorHandler);
+  }
+
+  destroy(articleId) {
+    return axios.delete(`${this.modelPath}/${articleId}`)
+                .then(response => response.data)
+                .catch(this.errorHandler);
+  }
+
+  errorHandler(error) {
+    console.log(error);
+    alert(error.response.data.errors);
+  }
 }

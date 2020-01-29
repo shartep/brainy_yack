@@ -19,6 +19,18 @@ module API
           keys.map { |k| "#{k}--#{params[k]}" }.join('/')
         end
       end
+
+      def clear_cache
+        Rails.cache.clear
+      end
+
+      def notify_active_users
+        ActionCable.server.broadcast(notify_channel, {})
+      end
+
+      def notify_channel
+        raise NotImplementedError
+      end
     end
   end
 end
