@@ -25,7 +25,11 @@ module API
       end
 
       def notify_active_users
-        # implement notification via ActiveCable here
+        ActionCable.server.broadcast(notify_channel, {})
+      end
+
+      def notify_channel
+        raise NotImplementedError
       end
     end
   end

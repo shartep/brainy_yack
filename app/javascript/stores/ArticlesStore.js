@@ -1,23 +1,20 @@
-import axios from 'axios'
-import { observable, computed, action, reaction, toJS } from 'mobx'
 import _ from 'lodash'
+import ArticlesApi from '../services/ArticlesApi'
+import { observable, computed, action, reaction, toJS } from 'mobx'
 
 class ArticlesStore {
-  @observable data = {
-    group_by: null,
-    collection: []
-  };
+  @observable groupBy = null;
+  @observable collection = [];
   @observable params = {
     search: null,
-    order: {
-      field: null,
-      direction: null
-    },
+    order_field: null,
+    order_direction: null,
     grouped_by: null
   };
 
   constructor() {
     this.subscribeParamsChanged();
+    this.articlesApi = new ArticlesApi(this.fetchArticles.bind(this));
   }
 
   subscribeParamsChanged() {
@@ -28,18 +25,26 @@ class ArticlesStore {
   }
 
   @computed get requestParams() {
-    let params = toJS(this.params);
-    params.order_field = params.order.field;
-    params.order_direction = params.order.direction;
-
-    return _.pickBy(params, (v, k) => !_.isNil(v) && v !== '' && k !== 'order')
+    return _.pickBy(toJS(this.params), (v, k) => !_.isNil(v) && v !== '')
   }
 
-  @action fetchArticles() {
-    axios
-      .get('/api/v1/articles', {params: this.requestParams})
-      .then(response => this.data = response.data)
-      .catch(error => console.log(error));
+  @action setOrder(field, direction) {
+    this.params.order_field = field;
+    this.params.order_direction = direction;
+  }
+
+  fetchArticles() {
+    this.articlesApi.fetchArticles(this.requestParams).then(this.replaceData.bind(this))
+  }
+
+  replaceData(resp) {
+    this.collection = [];
+    this.setData(resp.group_by, resp.collection);
+  }
+
+  @action setData(groupBy, collection) {
+    this.groupBy = groupBy;
+    this.collection = collection;
   }
 }
 

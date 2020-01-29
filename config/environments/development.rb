@@ -25,7 +25,7 @@ Rails.application.configure do
   #   config.cache_store = :null_store
   # end
 
-  config.cache_store = :redis_store, 'redis://localhost:6379/0/cache', { expires_in: 12.hours }
+  config.cache_store = :redis_store, 'redis://localhost:6379/0/cache', {expires_in: 12.hours}
   config.active_record.cache_versioning = false
 
   # Print deprecation notices to the Rails logger.

@@ -1,12 +1,13 @@
 import React                from 'react'
 import { inject, observer } from 'mobx-react'
+import { computed }         from 'mobx'
 
 @inject('articlesStore')
 
 @observer
 export default class SearchInput extends React.Component {
-  get params()     { return this.props.articlesStore.params }
-  get search()     { return this.params.search }
+  @computed get params() { return this.props.articlesStore.params }
+  @computed get search() { return this.params.search }
   set search(term) { this.params.search = term }
 
   onChange(event) {

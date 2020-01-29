@@ -1,7 +1,7 @@
-import React                 from 'react'
-import { observer, inject }  from 'mobx-react'
-import { toJS }              from 'mobx'
-import _                     from 'lodash'
+import React                from 'react'
+import { computed, toJS }   from 'mobx'
+import _                    from 'lodash'
+import { observer, inject } from 'mobx-react'
 
 import ArticlesGroup from './ArticlesGroup'
 import ArticleRow    from './ArticleRow'
@@ -20,22 +20,23 @@ export default class Articles extends React.Component {
     this.props.storiesStore.fetchStories();
   }
 
-  get data()    { return this.props.articlesStore.data }
-  get params()  { return this.props.articlesStore.params }
+  @computed get groupBy()    { return this.props.articlesStore.groupBy }
+  @computed get collection() { return this.props.articlesStore.collection }
+  @computed get params()     { return this.props.articlesStore.params }
 
   renderData() {
-    if (this.data.group_by === null) {
-      return this.data.collection.map(
+    if (this.groupBy === null) {
+      return this.collection.map(
         article => (<ArticleRow key={article.id} article={article}/>)
       )
-    } else if (this.data.group_by === 'story') {
+    } else if (this.groupBy === 'story') {
       return _.map(
-        toJS(this.data.collection),
+        toJS(this.collection),
         (storyData, story) => (<StoryGroup key={story} name={story} storyData={storyData}/>)
       )
     } else {
       return _.map(
-        toJS(this.data.collection),
+        toJS(this.collection),
         (articles, group) => (<ArticlesGroup key={group} name={group} articles={articles}/>)
       )
     }
@@ -43,7 +44,7 @@ export default class Articles extends React.Component {
 
   render() {
     return (
-      <>
+      <div>
         <NewArticle />
         <br/>
         <SearchInput />
@@ -66,7 +67,7 @@ export default class Articles extends React.Component {
             {this.renderData()}
           </tbody>
         </table>
-      </>
+      </div>
     );
   }
 }

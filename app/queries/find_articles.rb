@@ -66,7 +66,7 @@ class FindArticles < Service::Base
         @scope.order("stories.name #{order_direction || 'ASC'}")
       else
         @scope.order(order_field => (order_direction || 'ASC'))
-      end.order(:id)
+      end.order(id: :desc)
   end
 
   def apply_grouped_by

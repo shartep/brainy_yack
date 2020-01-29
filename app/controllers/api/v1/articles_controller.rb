@@ -59,6 +59,10 @@ module API
       def article_params
         params.require(:article).permit(:type, :name, :text, :story_id)
       end
+
+      def notify_channel
+        'articles:articles'
+      end
     end
   end
 end

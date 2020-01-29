@@ -3,6 +3,7 @@ import { observer, inject } from 'mobx-react'
 import PropTypes            from 'prop-types'
 import { FontAwesomeIcon }  from '@fortawesome/react-fontawesome'
 import axios                from 'axios'
+import { computed }         from 'mobx'
 
 @inject('storiesStore')
 
@@ -22,7 +23,7 @@ export default class ArticleRow extends React.Component {
     };
   }
 
-  get stories() { return this.props.storiesStore.data }
+  @computed get stories() { return this.props.storiesStore.data }
 
   onStoryChange(event) {
     const select = event.target;
@@ -46,7 +47,7 @@ export default class ArticleRow extends React.Component {
   }
 
   saveChanges() {
-    if (this.state.changed !== true ) { return }
+    if (this.state.changed !== true ) { return this.toggleEditMode() }
 
     const params = {
       article: {
@@ -79,7 +80,7 @@ export default class ArticleRow extends React.Component {
     else { return 'edit' }
   }
 
-  toggleEditMode() { this.setState(state => ({editMode: !state.editMode })) }
+  toggleEditMode() { this.setState(state => ({editMode: !state.editMode, changed: false})) }
 
   isEditMode() { return this.state.editMode === true }
 

@@ -1,7 +1,7 @@
 import React                from 'react'
 import { observer, inject } from 'mobx-react'
 import { FontAwesomeIcon }  from '@fortawesome/react-fontawesome'
-import axios                from 'axios'
+import { computed }         from 'mobx'
 
 @inject('storiesStore')
 
@@ -20,7 +20,7 @@ export default class NewArticle extends React.Component {
     this.state = this.initialState;
   }
 
-  get stories() { return this.props.storiesStore.data }
+  @computed get stories() { return this.props.storiesStore.data }
 
   cleanState() { this.setState(this.initialState) }
 

@@ -1,11 +1,12 @@
 import React                from 'react'
 import { inject, observer } from 'mobx-react'
+import { computed }         from 'mobx'
 
 @inject('articlesStore')
 
 @observer
 export default class GroupSelect extends React.Component {
-  get params() { return this.props.articlesStore.params }
+  @computed get params() { return this.props.articlesStore.params }
 
   onChange(event) { this.params.grouped_by = event.target.value }
 
