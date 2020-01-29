@@ -24,6 +24,9 @@ gem 'bootsnap', '>= 1.4.2', require: false
 # gem 'rack-cors'
 
 gem 'redis-rails'
+group :production do
+  gem 'faker'               # generates fake data
+end
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

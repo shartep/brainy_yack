@@ -79,7 +79,4 @@ test:
 #     url: <%= ENV['DATABASE_URL'] %>
 #
 production:
-  <<: *default
-  database: brainy_yack_production
-  username: brainy_yack
-  password: <%= ENV['BRAINY_YACK_DATABASE_PASSWORD'] %>
+  url: <%= ENV['DATABASE_URL'] %>
