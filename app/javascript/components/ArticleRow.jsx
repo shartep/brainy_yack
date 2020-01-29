@@ -50,8 +50,7 @@ export default class ArticleRow extends React.Component {
       type: this.state.type,
       name: this.state.name,
       text: this.state.text
-    });
-    this.toggleEditMode();
+    }).then(this.toggleEditMode.bind(this));
   }
 
   editHandler(event) {

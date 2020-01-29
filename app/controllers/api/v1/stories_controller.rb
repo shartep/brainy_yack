@@ -7,13 +7,12 @@ module API
       # GET /stories
       def index
         response = Rails.cache.fetch('stories') do
-          @stories = Story.all
-          @stories.as_json(only: %i[id name])
+          Story.all.as_json(only: %i[id name])
         end
         render json: response, status: :ok
       end
 
-      # currently not used, can be used in future for React frontend
+      # currently not used, can be used in future if stories page will be implemented in React similar to articles
       #
       # # POST /stories
       # def create

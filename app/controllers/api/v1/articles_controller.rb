@@ -13,7 +13,7 @@ module API
 
         render json: response, status: :ok
       rescue Service::ValidationError => e
-        render json: {errors: e.errors}, status: :unprocessable_entity
+        render json: {errors: e.errors.full_messages}, status: :unprocessable_entity
       end
 
       # POST /stories

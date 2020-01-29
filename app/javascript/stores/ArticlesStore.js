@@ -34,7 +34,7 @@ class ArticlesStore {
   }
 
   fetchArticles() {
-    this.articlesApi.fetchArticles(this.requestParams).then(this.replaceData.bind(this))
+    this.articlesApi.index(this.requestParams).then(this.replaceData.bind(this))
   }
 
   replaceData(resp) {
@@ -48,15 +48,15 @@ class ArticlesStore {
   }
 
   addArticle(article) {
-    this.articlesApi.post({action: 'create', ...article})
+    return this.articlesApi.create(article)
   }
 
   updateArticle(article) {
-    this.articlesApi.post({action: 'update', ...article})
+    return this.articlesApi.update(article)
   }
 
   deleteArticle(articleId) {
-    this.articlesApi.post({action: 'destroy', id: articleId})
+    return this.articlesApi.destroy(articleId)
   }
 }
 

@@ -67,6 +67,6 @@ class StoriesController < ApplicationController
   end
 
   def notify_channel
-    'stories:stories'
+    'stories'
   end
 end

@@ -43,8 +43,7 @@ export default class NewArticle extends React.Component {
       type: this.state.type,
       name: this.state.name,
       text: this.state.text
-    });
-    this.cleanState();
+    }).then(this.cleanState.bind(this));
   }
 
   renderStories() {

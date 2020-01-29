@@ -6,13 +6,13 @@ export default class ArticlesApi {
 
   constructor(callback) {
     this.subscription = cable.subscriptions.create('ArticlesChannel', {received: callback});
+    this.errorHandler = this.errorHandler.bind(this);
   }
 
-  fetchArticles(params) {
-    return axios
-            .get(this.modelPath, {params: params})
-            .then(response => response.data)
-            .catch(error => console.log(error));
+  index(params) {
+    return axios.get(this.modelPath, {params: params})
+                .then(response => response.data)
+                .catch(this.errorHandler);
   }
 
   create(article) {
