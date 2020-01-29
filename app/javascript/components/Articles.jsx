@@ -47,6 +47,7 @@ export default class Articles extends React.Component {
       <div>
         <NewArticle />
         <br/>
+        <h1>Articles List</h1>
         <SearchInput />
         <GroupSelect />
         <br/>
