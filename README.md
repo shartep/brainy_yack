@@ -40,3 +40,7 @@ Application should be up and running on the server. Please provide SSH access to
 # Deployed to
 
 https://brainy-yack.herokuapp.com/
+
+as I us Heroku for hosting, to get ssh access, please send me email address which used as Heroku login
+
+I implement English full text search, using Postgres feature, so search will work in little bit different way as usual.

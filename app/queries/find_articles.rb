@@ -2,7 +2,7 @@
 # related to fetching Articles from DB
 class FindArticles < Service::Base
   subject :scope
-  param :search, default: nil
+  param :search, default: nil, &:strip
   param :order_field, default: nil
   param :order_direction, default: nil
   param :grouped_by, default: nil
