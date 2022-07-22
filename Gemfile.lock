@@ -222,7 +222,7 @@ GEM
     tilt (2.0.10)
     timecop (0.9.1)
     trollop (1.16.2)
-    tzinfo (1.2.6)
+    tzinfo (1.2.10)
       thread_safe (~> 0.1)
     unicode-display_width (1.6.0)
     webpacker (4.2.2)
